@@ -20,7 +20,7 @@ trait PlayerTrait {
     * @param shot
     * @return
     */
-  def receiveShoot(shot: (Int, Int)): Option[PlayerTrait]
+  def receiveShoot(shot: (Int, Int)): (PlayerTrait, Boolean)
 
   /**
     *

@@ -1,6 +1,6 @@
 package battleship.core.models
 
-import battleship.utils.display.{GameDisplay, PlayerDisplay}
+import battleship.utils.display.{GameDisplay, GridDisplay, PlayerDisplay}
 
 import scala.collection.immutable.Seq
 import battleship.utils.io.PlayerInputs
@@ -13,14 +13,14 @@ case class HumanPlayer(ships: Seq[Ship], name: String, shots: Map[(Int, Int),Boo
     PlayerInputs.getPoint()
   }
 
-  override def receiveShoot(shot: (Int, Int)): Option[HumanPlayer] = {
+  override def receiveShoot(shot: (Int, Int)): (HumanPlayer, Boolean) = {
     val shipShot: Option[Ship] = ships.find(ship => ship.squares.contains(shot))
     shipShot match {
       case Some(ship) => {
         val newShip: Ship = ship.hit(shot)
-        Some(HumanPlayer(ships.map { case oldShip if oldShip == ship => newShip; case x => x }, name, shots, receivedShots :+ shot))
+        (HumanPlayer(ships.map { case oldShip if oldShip == ship => newShip; case x => x }, name, shots, receivedShots :+ shot), true)
       }
-      case None => None
+      case None => (HumanPlayer(ships, name, shots, receivedShots :+ shot), false)
     }
   }
 
@@ -34,23 +34,47 @@ object HumanPlayer {
 
   def createPlayer(name: String): HumanPlayer = {
 
-    def isShipValid(ship: Ship): Boolean = {
+
+    PlayerDisplay.placeYourShips(name)
+    def isOverlapping(ship: Ship, existingShips: Seq[Ship]): Boolean = {
+      ship.
+        squares.
+        dropWhile(point => {
+          val coordinates = point._1
+          coordinates._1 < 10 && coordinates._2 < 10 && existingShips.dropWhile(ship => !ship.squares.contains(coordinates)).isEmpty
+        })
+        .nonEmpty
+    }
+
+    def isShipOut(): Boolean = {
       true
     }
 
     @tailrec
-    def createShip(shipConfig: (String, Int)): Ship = {
-      PlayerDisplay.setNewShip(shipConfig._1, shipConfig._2)
-      val direction: String = PlayerInputs.getDirection()
-      PlayerDisplay.getOriginShip(shipConfig._1, shipConfig._2)
-      val point: (Int, Int) = PlayerInputs.getPoint()
-      val ship = Ship.convertInputsToShip(shipConfig._1, direction, point)
-      if(isShipValid(ship)) ship else createShip(shipConfig)
+    def createShip(shipsConfig: Map[String, Int], existingShips: Seq[Ship]): Seq[Ship] = {
+      val shipConfigOption = shipsConfig.headOption
+      shipConfigOption match {
+        case Some(shipConfig) => {
+          GridDisplay.showPlayerGrid(existingShips, Seq[(Int, Int)]())
+
+          val shipInfo: ShipInformation = PlayerInputs.getShipInformation(shipConfig)
+          val ship = Ship.convertInputsToShip(shipConfig._1, shipInfo.direction, shipInfo.point)
+
+          if (!isOverlapping(ship, existingShips)) {
+            createShip(shipsConfig.tail, existingShips :+ ship)
+          } else {
+            PlayerDisplay.problemPlacingShip(ship)
+            createShip(shipsConfig, existingShips)
+          }
+        }
+        case None => {
+          GridDisplay.showPlayerGrid(existingShips, Seq[(Int, Int)]())
+          existingShips
+        }
+      }
     }
 
-    val ships = Ship.shipsConfig.map(shipConfig => {
-      createShip(shipConfig)
-    })
-    new HumanPlayer(ships.to[collection.immutable.Seq], name, shots = Map[(Int, Int), Boolean](), Seq[(Int, Int)]())
+    val ships = createShip(Ship.shipsConfig, Seq[Ship]())
+    new HumanPlayer(ships, name, shots = Map[(Int, Int), Boolean](), Seq[(Int, Int)]())
   }
 }

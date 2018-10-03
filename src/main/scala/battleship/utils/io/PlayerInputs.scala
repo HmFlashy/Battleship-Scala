@@ -2,12 +2,31 @@ package battleship.utils.io
 
 import java.lang.Exception
 
-import battleship.core.models.Ship
+import battleship.core.models.{Ship, ShipInformation}
+import battleship.utils.display.PlayerDisplay
 
 import scala.annotation.tailrec
 import scala.io.StdIn
 
 object PlayerInputs {
+
+  @tailrec
+  def choseName(): String = {
+    val name = StdIn.readLine()
+    val Pattern = """(^\w+$)""".r
+    name match {
+      case Pattern(c) => c
+      case _ => choseName()
+    }
+  }
+
+  def getShipInformation(shipConfig: (String, Int)): ShipInformation = {
+    PlayerDisplay.setNewShip(shipConfig._1, shipConfig._2)
+    val direction: String = PlayerInputs.getDirection()
+    PlayerDisplay.getOriginShip(shipConfig._1, shipConfig._2)
+    val point: (Int, Int) = PlayerInputs.getPoint()
+    ShipInformation(direction, point)
+  }
 
   @tailrec
   def getDirection(): String = {

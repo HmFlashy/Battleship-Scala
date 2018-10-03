@@ -4,6 +4,27 @@ import battleship.core.models.{PlayerTrait, Ship}
 
 object PlayerDisplay {
 
+  def touched() = {
+    println("HIT !")
+  }
+
+  def notTouched(): Unit = {
+    println("Not hit, too bad...")
+  }
+
+  def shoot() = {
+    println("Choose your target: x y")
+  }
+
+  def problemPlacingShip(ship: Ship) = {
+    println(s"Problem placing the ${ship.name}")
+  }
+
+
+  def placeYourShips(namePlayer: String) = {
+    println(s"${namePlayer}")
+  }
+
   def getOriginShip(nameShip: String, sizeShip: Int) = {
     println("What is the origin of your ship: x y")
   }
@@ -16,6 +37,10 @@ object PlayerDisplay {
 
 
   def show(player: PlayerTrait): Unit = {
-
+    println(s"${player.name} it is your turn ->")
+    GridDisplay.showPlayerGrid(player.ships, player.shots.keys.toSeq)
   }
+
+  case class Touched()
+
 }

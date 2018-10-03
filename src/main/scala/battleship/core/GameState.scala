@@ -1,6 +1,5 @@
 package battleship.core
 
-import battleship.core.models
 import battleship.core.models.PlayerTrait
 
 case class GameState(currentPlayer: PlayerTrait, opponent: PlayerTrait, numberOfTurns: Int) {

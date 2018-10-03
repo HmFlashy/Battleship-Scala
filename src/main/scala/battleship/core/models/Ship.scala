@@ -65,7 +65,7 @@ object Ship {
         case 0 => Ship(name, squares)
         case _ => {
           val newSquares = squares.+(point -> false)
-          val newPoint = if(direction == Ship.HORIZONTAL) (point._1 + 1, point._2) else (point._1, point._2 + 1)
+          val newPoint = if(direction == Ship.HORIZONTAL) (point._1, point._2 + 1) else (point._1 + 1, point._2)
           convertInputsToShipTR(name, squareLeft - 1, direction, newPoint, newSquares)
         }
       }

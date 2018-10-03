@@ -4,7 +4,12 @@ import battleship.core.GameState
 import battleship.core.models.PlayerTrait
 
 
-object GameDisplay extends Display[GameState] {
+object GameDisplay {
+
+  def choseYourName(playerNumber: Int)  = {
+    println(s"Player ${playerNumber}, chose your name")
+  }
+
 
   def choiceOfPlayers(): Unit = {
     println("""Choose the kind of game you want to play:
@@ -26,7 +31,7 @@ object GameDisplay extends Display[GameState] {
 
   }
 
-  def show(gameState: GameState) = {
-
+  def clear(): Unit = {
+    Console.flush()
   }
 }
