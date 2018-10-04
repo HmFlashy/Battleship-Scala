@@ -6,15 +6,15 @@ import battleship.utils.ships.Generator
 import scala.collection.immutable.Seq
 import scala.util.Random
 
-case class WeakIAPlayer(ships: Seq[Ship], name: String, shots: Map[(Int, Int), Boolean], receivedShots: Seq[(Int, Int)], random: Random) extends PlayerTrait {
+case class WeakIAPlayer(ships: Seq[Ship], name: String, shots: Map[(Int, Int), Boolean], receivedShots: Seq[(Int, Int)], random: Random, numberOfWins: Int) extends PlayerTrait {
 
   /**
     *
     * @return
     */
-  override def shoot(): (WeakIAPlayer, (Int, Int)) = {
+  override def shoot(): (Int, Int) = {
     val point = (random.nextInt(GameConfig.gridSize), random.nextInt(GameConfig.gridSize))
-    (this.copy(random = random), point)
+    point
   }
 
   /**
@@ -28,9 +28,9 @@ case class WeakIAPlayer(ships: Seq[Ship], name: String, shots: Map[(Int, Int), B
       case Some(ship) => {
         val newShip: Ship = ship.hit(shot)
         val sank: Boolean = newShip.isSank()
-        (WeakIAPlayer(ships.map { case oldShip if oldShip == ship => newShip; case x => x }, name, shots, receivedShots :+ shot, random), true, sank)
+        (WeakIAPlayer(ships.map { case oldShip if oldShip == ship => newShip; case x => x }, name, shots, receivedShots :+ shot, random, numberOfWins), true, sank)
       }
-      case None => (WeakIAPlayer(ships, name, shots, receivedShots :+ shot, random), false, false)
+      case None => (WeakIAPlayer(ships, name, shots, receivedShots :+ shot, random, numberOfWins), false, false)
     }
   }
 
@@ -41,13 +41,22 @@ case class WeakIAPlayer(ships: Seq[Ship], name: String, shots: Map[(Int, Int), B
     * @return
     */
   override def didShoot(target: (Int, Int), didTouch: Boolean): WeakIAPlayer = {
-    WeakIAPlayer(ships, name, shots + (target -> didTouch), receivedShots, random)
+    WeakIAPlayer(ships, name, shots + (target -> didTouch), receivedShots, random, numberOfWins)
+  }
+
+  override def addVictory(): PlayerTrait = {
+    this.copy(numberOfWins = numberOfWins + 1)
+  }
+
+  override def reset(): PlayerTrait = {
+    val newShips: Seq[Ship] = Generator.randomShips(GameConfig.shipsConfig, Seq[Ship](), this.random)
+    this.copy(ships = newShips, shots = Map[(Int, Int), Boolean](), receivedShots = Seq[(Int, Int)]())
   }
 }
 
 object WeakIAPlayer {
-  def generateIA(index: Int): WeakIAPlayer = {
-    val ships: Seq[Ship] = Generator.randomShips(GameConfig.shipsConfig, Seq[Ship](), new Random())
-    WeakIAPlayer(ships, "IA"+index, Map[(Int, Int), Boolean](), Seq[(Int, Int)](), new Random())
+  def generateIA(index: Int, random: Random): WeakIAPlayer = {
+    val ships: Seq[Ship] = Generator.randomShips(GameConfig.shipsConfig, Seq[Ship](), random)
+    WeakIAPlayer(ships, "IA"+index, Map[(Int, Int), Boolean](), Seq[(Int, Int)](), random, 0)
   }
 }

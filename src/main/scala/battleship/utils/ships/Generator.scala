@@ -2,7 +2,6 @@ package battleship.utils.ships
 
 import battleship.core.{GameConfig, models}
 import battleship.core.models.{Ship, ShipInformation}
-import battleship.utils.io.PlayerDisplay
 import battleship.utils.io.{GridDisplay, PlayerDisplay, PlayerInputs}
 
 import scala.annotation.tailrec

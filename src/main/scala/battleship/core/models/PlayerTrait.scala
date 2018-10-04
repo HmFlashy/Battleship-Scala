@@ -2,6 +2,7 @@ package battleship.core.models
 
 import scala.annotation.tailrec
 import scala.collection.immutable.Seq
+import scala.util.Random
 
 trait PlayerTrait {
 
@@ -9,12 +10,14 @@ trait PlayerTrait {
   val ships: Seq[Ship]
   val shots: Map[(Int, Int), Boolean]
   val receivedShots: Seq[(Int, Int)]
+  val numberOfWins: Int
+  val random: Random
 
   /**
     *
     * @return
     */
-  def shoot(): (PlayerTrait,(Int, Int))
+  def shoot(): (Int, Int)
 
   /**
     *
@@ -47,5 +50,9 @@ trait PlayerTrait {
     * @return
     */
   def didShoot(target: (Int, Int), didTouch: Boolean): PlayerTrait
+
+  def addVictory(): PlayerTrait
+
+  def reset(): PlayerTrait
 
 }
