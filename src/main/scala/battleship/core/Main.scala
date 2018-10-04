@@ -9,8 +9,11 @@ import scala.util.Random
 
 object Main extends App {
 
-  var initRandom = new Random()
-
+  val initRandom = new Random()
+  if(GameConfig.gridSize > 10) {
+    GameDisplay.gridTooBig()
+    System.exit(1)
+  }
   def initPlayers(): (PlayerTrait, PlayerTrait) = {
     GameDisplay.choiceOfPlayers()
     val choiceOfPlayers = PlayerInputs.choiceOfPlayers()
@@ -35,12 +38,13 @@ object Main extends App {
     val opponent = gameState.opponent
     if(winner.isEmpty) {
       GameDisplay.clear()
-      PlayerDisplay.show(currentPlayer)
+      PlayerDisplay.show(currentPlayer, opponent)
       PlayerDisplay.shoot()
       val target: (Int, Int) = currentPlayer.shoot()
-      val (newOpponent, touched): (PlayerTrait, Boolean) = opponent.receiveShoot(target)
-      if(touched) PlayerDisplay.touched() else PlayerDisplay.notTouched()
+      val (newOpponent, touched, sank): (PlayerTrait, Boolean, Boolean) = opponent.receiveShoot(target)
+      if(sank) PlayerDisplay.sank() else if(touched) PlayerDisplay.touched() else PlayerDisplay.notTouched()
       val newCurrentPlayer = currentPlayer.didShoot(target, didTouch = touched)
+      GameDisplay.opponentsTurn(newCurrentPlayer.name)
       mainLoop(GameState(newOpponent, newCurrentPlayer, gameState.numberOfTurns + 1), random)
     } else {
       GameDisplay.gameIsOver(winner.get)
@@ -48,6 +52,5 @@ object Main extends App {
   }
 
   val players = initPlayers()
-  println(players)
   mainLoop(GameState(players._1, players._2, 0), initRandom)
 }

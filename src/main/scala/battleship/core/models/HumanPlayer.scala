@@ -1,5 +1,6 @@
 package battleship.core.models
 
+import battleship.core.GameConfig
 import battleship.utils.display.{GameDisplay, GridDisplay, PlayerDisplay}
 
 import scala.collection.immutable.Seq
@@ -13,14 +14,15 @@ case class HumanPlayer(ships: Seq[Ship], name: String, shots: Map[(Int, Int),Boo
     PlayerInputs.getPoint()
   }
 
-  override def receiveShoot(shot: (Int, Int)): (HumanPlayer, Boolean) = {
+  override def receiveShoot(shot: (Int, Int)): (HumanPlayer, Boolean, Boolean) = {
     val shipShot: Option[Ship] = ships.find(ship => ship.squares.contains(shot))
     shipShot match {
       case Some(ship) => {
         val newShip: Ship = ship.hit(shot)
-        (HumanPlayer(ships.map { case oldShip if oldShip == ship => newShip; case x => x }, name, shots, receivedShots :+ shot), true)
+        val sank: Boolean = newShip.isSank()
+        (HumanPlayer(ships.map { case oldShip if oldShip == ship => newShip; case x => x }, name, shots, receivedShots :+ shot), true, sank)
       }
-      case None => (HumanPlayer(ships, name, shots, receivedShots :+ shot), false)
+      case None => (HumanPlayer(ships, name, shots, receivedShots :+ shot), false, false)
     }
   }
 
@@ -41,7 +43,7 @@ object HumanPlayer {
         squares.
         dropWhile(point => {
           val coordinates = point._1
-          coordinates._1 < 10 && coordinates._2 < 10 && existingShips.dropWhile(ship => !ship.squares.contains(coordinates)).isEmpty
+          coordinates._1 < GameConfig.gridSize && coordinates._2 < GameConfig.gridSize && existingShips.dropWhile(ship => !ship.squares.contains(coordinates)).isEmpty
         })
         .nonEmpty
     }
@@ -74,7 +76,7 @@ object HumanPlayer {
       }
     }
 
-    val ships = createShip(Ship.shipsConfig, Seq[Ship]())
+    val ships = createShip(GameConfig.shipsConfig, Seq[Ship]())
     new HumanPlayer(ships, name, shots = Map[(Int, Int), Boolean](), Seq[(Int, Int)]())
   }
 }

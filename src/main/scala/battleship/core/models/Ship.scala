@@ -1,15 +1,15 @@
 package battleship.core.models
 
-import scala.annotation.tailrec
-import scala.collection.immutable.ListMap
+import battleship.core.GameConfig
 
+import scala.annotation.tailrec
 case class Ship(name: String, squares: Map[(Int, Int), Boolean]){
 
   /**
     *
     * @return
     */
-  def isSink(): Boolean = {
+  def isSank(): Boolean = {
     squares.forall(point => point._2)
   }
 
@@ -25,8 +25,8 @@ case class Ship(name: String, squares: Map[(Int, Int), Boolean]){
 }
 
 object Ship {
-  val HORIZONTAL = "1"
-  val VERTICAL = "2"
+  val HORIZONTAL = "H"
+  val VERTICAL = "V"
 
   val CARRIER = "Carrier"
   val BATTLESHIP = "Battleship"
@@ -34,13 +34,6 @@ object Ship {
   val SUBMARINE = "Submarine"
   val DESTROYER = "Destroyer"
 
-  val shipsConfig: Map[String, Int] = ListMap(Map(
-    CARRIER -> 5,
-    BATTLESHIP -> 4,
-    CRUISER -> 3,
-    SUBMARINE -> 3,
-    DESTROYER -> 2
-  ).toSeq.sortBy(_._2):_*)
 
   /**
     *
@@ -50,7 +43,6 @@ object Ship {
     * @return
     */
   def convertInputsToShip(name: String, direction: String, point: (Int, Int)): Ship = {
-
     /**
       *
       * @param squareLeft
@@ -70,7 +62,7 @@ object Ship {
         }
       }
     }
-    convertInputsToShipTR(name, shipsConfig(name), direction, point, Map[(Int, Int), Boolean]())
+    convertInputsToShipTR(name, GameConfig.shipsConfig(name), direction, point, Map[(Int, Int), Boolean]())
   }
 
 }

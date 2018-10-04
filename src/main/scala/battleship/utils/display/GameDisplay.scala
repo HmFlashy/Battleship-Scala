@@ -1,10 +1,18 @@
 package battleship.utils.display
 
-import battleship.core.GameState
 import battleship.core.models.PlayerTrait
 
 
 object GameDisplay {
+
+  def opponentsTurn(name: String) = {
+    println(name + " it is your turn -> Press enter to continue...")
+  }
+
+  def gridTooBig() = {
+    println("The grid size is too big, change the game config and rebuild, exit...")
+  }
+
 
   def choseYourName(playerNumber: Int)  = {
     println(s"Player ${playerNumber}, chose your name")
@@ -32,6 +40,6 @@ object GameDisplay {
   }
 
   def clear(): Unit = {
-    Console.flush()
+    print("\u001b[2J")
   }
 }

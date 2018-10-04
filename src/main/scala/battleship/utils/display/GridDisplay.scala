@@ -1,19 +1,30 @@
 package battleship.utils.display
 
+import battleship.core.GameConfig
 import battleship.core.models.{PlayerTrait, Ship}
 
 import scala.annotation.tailrec
 
 object GridDisplay {
 
-  private val TOUCHED = Console.RED
-  private val NOTTOUCHED = Console.GREEN
-  private val WATER = Console.BLUE
-  private val MISSED = Console.BLUE_B
-  private val BLOCK = "███"
-  private val BASE_COLOR = Console.WHITE
+  private val TOUCHED: String = Console.RED
+  private val NOTTOUCHED: String  = Console.BLACK
+  private val WATER: String  = Console.BLUE
+  private val MISSED: String  = Console.YELLOW
+  private val BLOCK: String  = "███"
+  private val BASE_COLOR: String  = Console.WHITE
 
   private def showGrid(grid: List[List[String]]): Unit = {
+
+    println()
+    @tailrec
+    def printLineNumbers(actual: Int, n: Int): Unit ={
+      actual match {
+        case _ if actual < n => print(s" ${actual} "); printLineNumbers(actual + 1, n)
+        case _ => { println() }
+      }
+    }
+    printLineNumbers(0, GameConfig.gridSize)
 
     @tailrec
     def showGridTR(grid: List[List[String]]): Unit = {
@@ -27,7 +38,7 @@ object GridDisplay {
               showGridTR(grid.updated(0, line.tail))
             }
             case _ => {
-              println()
+              print(s" ${ ((GameConfig.gridSize - grid.size) + 'A').toChar }") ; println()
               showGridTR(grid.tail)
             }
           }
@@ -36,10 +47,11 @@ object GridDisplay {
       }
     }
     showGridTR(grid)
+    println()
   }
 
   def showPlayerGrid(ships: Seq[Ship], shots: Seq[(Int, Int)]): Unit = {
-    var grid = Array.ofDim[String](10, 10).toList.map((array) => Array.fill[String](10)(WATER + BLOCK).toList)
+    var grid = Array.ofDim[String](GameConfig.gridSize, GameConfig.gridSize).toList.map((array) => Array.fill[String](GameConfig.gridSize)(WATER + BLOCK).toList)
     shots.foreach((shot) => {
       grid = grid.updated(shot._1, grid(shot._1).updated(shot._2, MISSED + BLOCK))
     })
@@ -56,7 +68,11 @@ object GridDisplay {
     showGrid(grid)
   }
 
-  def showOpponentGrid(opponent: PlayerTrait): Unit = {
-    println("")
+  def showOpponentGrid(shots: Map[(Int, Int),Boolean]):Unit = {
+    var grid = Array.ofDim[String](GameConfig.gridSize, GameConfig.gridSize).toList.map((array) => Array.fill[String](GameConfig.gridSize)(WATER + BLOCK).toList)
+    shots.foreach((shot) => {
+      grid = grid.updated(shot._1._1, grid(shot._1._1).updated(shot._1._2, if(shot._2) TOUCHED + BLOCK else NOTTOUCHED + BLOCK))
+    })
+    showGrid(grid)
   }
 }

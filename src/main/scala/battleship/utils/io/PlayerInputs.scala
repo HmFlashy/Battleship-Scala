@@ -2,6 +2,7 @@ package battleship.utils.io
 
 import java.lang.Exception
 
+import battleship.core.GameConfig
 import battleship.core.models.{Ship, ShipInformation}
 import battleship.utils.display.PlayerDisplay
 
@@ -30,25 +31,31 @@ object PlayerInputs {
 
   @tailrec
   def getDirection(): String = {
-    val direction = StdIn.readLine()
+    val direction = StdIn.readLine().toUpperCase
     direction match {
       case Ship.HORIZONTAL | Ship.VERTICAL => direction
       case _ => getDirection()
     }
   }
 
-  def choiceOfPlayers() = {
-    StdIn.readInt()
+  def choiceOfPlayers(): Int = {
+    val choice = StdIn.readLine()
+    val Pattern = "(^[0-3]$)".r
+    choice match {
+      case Pattern(p) => {
+        p.toInt
+      }
+      case _ => choiceOfPlayers()
+    }
   }
 
   @tailrec
   def getPoint(): (Int, Int) = {
     val coordinates: String = StdIn.readLine()
-    val Pattern = "([0-9] [0-9])".r
+    val Pattern = ("(^[a-zA-Z][0-"+(GameConfig.gridSize-1)+"]$)").r
     coordinates match {
       case Pattern(p) => {
-        val coordinatesList = coordinates.split(" ")
-        (coordinatesList(0).toInt, coordinatesList(1).toInt)
+        (p(0).toUpper.toInt - 'A'.toInt, p(1) - '0'.toInt)
       }
       case _ => getPoint()
     }

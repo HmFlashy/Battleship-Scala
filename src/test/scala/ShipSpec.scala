@@ -12,7 +12,7 @@ class ShipSpec extends FlatSpec with Matchers {
     val ship: Ship = Ship.convertInputsToShip(Ship.CARRIER, Ship.HORIZONTAL, (0, 0))
     ship.squares should have size 5
   }
-  "A " + Ship.BATTLESHIP should "have 4 units" in {
+  "A " + Ship.BATTLESHIP  should "have 4 units" in {
     val ship: Ship = Ship.convertInputsToShip(Ship.BATTLESHIP, Ship.HORIZONTAL, (0, 0))
     ship.squares should have size 4
   }
@@ -28,4 +28,6 @@ class ShipSpec extends FlatSpec with Matchers {
     val ship: Ship = Ship.convertInputsToShip(Ship.DESTROYER, Ship.HORIZONTAL, (0, 0))
     ship.squares should have size 2
   }
+
+  s"A ${Ship.DESTROYER} that has been "
 }

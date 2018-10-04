@@ -15,7 +15,7 @@ case class WeakIAPlayer(ships: Seq[Ship], name: String, shots: Map[(Int, Int), B
     * @param shot
     * @return
     */
-  override def receiveShoot(shot: (Int, Int)): (PlayerTrait, Boolean) = ???
+  override def receiveShoot(shot: (Int, Int)): (PlayerTrait, Boolean, Boolean) = ???
 
   /**
     *

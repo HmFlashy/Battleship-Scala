@@ -1,6 +1,7 @@
 package battleship.core.models
 
 import scala.annotation.tailrec
+import scala.collection.immutable.Seq
 
 trait PlayerTrait {
 
@@ -20,7 +21,7 @@ trait PlayerTrait {
     * @param shot
     * @return
     */
-  def receiveShoot(shot: (Int, Int)): (PlayerTrait, Boolean)
+  def receiveShoot(shot: (Int, Int)): (PlayerTrait, Boolean, Boolean)
 
   /**
     *
@@ -33,7 +34,7 @@ trait PlayerTrait {
       val currentShip = ships.headOption
       currentShip match {
         case None => number
-        case Some(ship) => if(ship.isSink) numberOfShipsLeftTR(ships.tail, number) else numberOfShipsLeftTR(ships.tail, number + 1)
+        case Some(ship) => if(ship.isSank()) numberOfShipsLeftTR(ships.tail, number) else numberOfShipsLeftTR(ships.tail, number + 1)
       }
     }
     numberOfShipsLeftTR(ships, 0)
