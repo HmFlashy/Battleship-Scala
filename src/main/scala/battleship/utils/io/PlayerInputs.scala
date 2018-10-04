@@ -4,8 +4,6 @@ import java.lang.Exception
 
 import battleship.core.GameConfig
 import battleship.core.models.{Ship, ShipInformation}
-import battleship.utils.display.PlayerDisplay
-
 import scala.annotation.tailrec
 import scala.io.StdIn
 

@@ -6,7 +6,6 @@ import scala.collection.immutable.ListMap
 
 object GameConfig {
 
-
   val shipsConfig: Map[String, Int] = ListMap(Map(
     CARRIER -> 5,
     BATTLESHIP -> 4,

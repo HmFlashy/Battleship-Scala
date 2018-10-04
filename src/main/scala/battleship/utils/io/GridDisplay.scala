@@ -1,7 +1,7 @@
-package battleship.utils.display
+package battleship.utils.io
 
 import battleship.core.GameConfig
-import battleship.core.models.{PlayerTrait, Ship}
+import battleship.core.models.Ship
 
 import scala.annotation.tailrec
 

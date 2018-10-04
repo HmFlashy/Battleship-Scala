@@ -6,7 +6,7 @@ import battleship.core.models.Ship
 class ShipSpec extends FlatSpec with Matchers {
   "A new ship" should "be alive" in {
     val ship: Ship = Ship.convertInputsToShip(Ship.DESTROYER, Ship.HORIZONTAL, (0, 0))
-    ship.isSink() shouldBe false
+    ship.isSank() shouldBe false
   }
   "A " + Ship.CARRIER should "have 5 units" in {
     val ship: Ship = Ship.convertInputsToShip(Ship.CARRIER, Ship.HORIZONTAL, (0, 0))

@@ -14,7 +14,7 @@ trait PlayerTrait {
     *
     * @return
     */
-  def shoot(): (Int, Int)
+  def shoot(): (PlayerTrait,(Int, Int))
 
   /**
     *

@@ -1,4 +1,4 @@
-package battleship.utils.display
+package battleship.utils.io
 
 import battleship.core.models.{PlayerTrait, Ship}
 
