@@ -1,8 +1,33 @@
 package battleship.utils.io
 
-import battleship.core.models.PlayerTrait
+import battleship.core.models.Player
 
 object GameDisplay {
+  def continue() = {
+    println("Press a key to play a new game (q to quit)")
+  }
+
+
+  def end(results: Set[(Player, Player)]):Unit = {
+    println()
+    results.zipWithIndex.foreach(resultZip => {
+      val game = resultZip._1
+      val index = resultZip._2
+      println("Fight " + (index + 1) + s": ${game._1.name}  VS ${game._2.name}".toUpperCase())
+      println()
+      println(s"${game._1.name} won ${game._1.numberOfWins} time${if(game._1.numberOfWins > 1) 's' else ""} ")
+      println(s"${game._2.name} won ${game._2.numberOfWins} time${if(game._2.numberOfWins > 1) 's' else ""} ")
+      println()
+      println()
+    })
+  }
+
+
+  def endOfTurn() = {
+    println(s"End of your turn, press enter to continue...")
+  }
+
+
   def gameNumber(number: Int, oufOf: Int): Unit = {
     println("Game " + number + "/" + oufOf)
   }
@@ -32,7 +57,7 @@ object GameDisplay {
   }
 
 
-  def gameIsOver(player: PlayerTrait): Unit = {
+  def gameIsOver(player: Player): Unit = {
     println(
       s"""
         |${player.name} won the game !!!

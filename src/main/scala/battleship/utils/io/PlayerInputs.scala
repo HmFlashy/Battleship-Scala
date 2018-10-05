@@ -9,6 +9,15 @@ import scala.io.StdIn
 
 object PlayerInputs {
 
+  def continue() = {
+    StdIn.readLine()
+  }
+
+
+  def pressAKey() = {
+    StdIn.readLine()
+  }
+
   @tailrec
   def choseName(): String = {
     val name = StdIn.readLine()
@@ -53,7 +62,11 @@ object PlayerInputs {
     val Pattern = ("(^[a-zA-Z][0-"+(GameConfig.gridSize-1)+"]$)").r
     coordinates match {
       case Pattern(p) => {
-        (p(0).toUpper.toInt - 'A'.toInt, p(1) - '0'.toInt)
+        val line = p(0).toUpper.toInt - 'A'
+        if(line - GameConfig.gridSize < 0)
+          (line, p(1) - '0'.toInt)
+        else
+          getPoint()
       }
       case _ => getPoint()
     }

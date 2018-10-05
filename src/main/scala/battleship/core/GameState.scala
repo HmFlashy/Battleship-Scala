@@ -1,14 +1,14 @@
 package battleship.core
 
-import battleship.core.models.PlayerTrait
+import battleship.core.models.Player
 
-case class GameState(currentPlayer: PlayerTrait, opponent: PlayerTrait, numberOfGames:Int, gameCount: Int) {
+case class GameState(currentPlayer: Player, opponent: Player, numberOfGames:Int, gameCount: Int) {
 
-  def isThereAWinner(): Option[PlayerTrait] = {
+  def isThereAWinner(): Option[Player] = {
     if(currentPlayer.numberOfShipsLeft() == 0){
-      return Option[PlayerTrait](opponent)
+      return Option[Player](opponent)
     } else if(opponent.numberOfShipsLeft() == 0){
-      return Option[PlayerTrait](currentPlayer)
+      return Option[Player](currentPlayer)
     } else {
       return None
     }
@@ -19,5 +19,5 @@ case class GameState(currentPlayer: PlayerTrait, opponent: PlayerTrait, numberOf
 
 object GameState {
 
-  def apply(currentPlayer: PlayerTrait, opponent: PlayerTrait, numberOfGames: Int, gameCount: Int): GameState = new GameState(currentPlayer, opponent, numberOfGames, gameCount)
+  def apply(currentPlayer: Player, opponent: Player, numberOfGames: Int, gameCount: Int): GameState = new GameState(currentPlayer, opponent, numberOfGames, gameCount)
 }

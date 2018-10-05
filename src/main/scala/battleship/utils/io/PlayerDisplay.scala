@@ -1,10 +1,11 @@
 package battleship.utils.io
 
-import battleship.core.models.{PlayerTrait, Ship}
+import battleship.core.models.{Player, Ship}
 
 object PlayerDisplay {
-  def sank(): Unit = {
-    println("SANK !!! Well done !")
+
+  def sunk(name: String): Unit = {
+    println(name.toUpperCase() + " SUNK !!! Well done !")
   }
 
 
@@ -40,7 +41,7 @@ object PlayerDisplay {
   }
 
 
-  def show(player: PlayerTrait, opponent: PlayerTrait): Unit = {
+  def show(player: Player, opponent: Player): Unit = {
     println(s"${player.name} it is your turn ->")
   }
 

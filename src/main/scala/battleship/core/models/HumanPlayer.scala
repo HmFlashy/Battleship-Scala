@@ -8,21 +8,21 @@ import battleship.utils.ships.{Generator, Validator}
 
 import scala.util.Random
 
-case class HumanPlayer(ships: Seq[Ship], name: String, shots: Map[(Int, Int),Boolean], receivedShots: Seq[(Int, Int)], numberOfWins: Int, random: Random) extends PlayerTrait {
+case class HumanPlayer(ships: Seq[Ship], name: String, shots: Map[(Int, Int),Boolean], receivedShots: Seq[(Int, Int)], numberOfWins: Int, random: Random) extends Player {
 
   override def shoot(): (Int, Int) = {
     PlayerInputs.getPoint()
   }
 
-  override def receiveShoot(shot: (Int, Int)): (HumanPlayer, Boolean, Boolean) = {
+  override def receiveShoot(shot: (Int, Int)): (HumanPlayer, Boolean, Option[Ship]) = {
     val shipShot: Option[Ship] = ships.find(ship => ship.squares.contains(shot))
     shipShot match {
       case Some(ship) => {
         val newShip: Ship = ship.hit(shot)
-        val sank: Boolean = newShip.isSank()
-        (HumanPlayer(ships.map { case oldShip if oldShip == ship => newShip; case x => x }, name, shots, receivedShots :+ shot, numberOfWins, random), true, sank)
+        val sunk: Boolean = newShip.isSunk()
+        (HumanPlayer(ships.map { case oldShip if oldShip == ship => newShip; case x => x }, name, shots, receivedShots :+ shot, numberOfWins, random), true, if(sunk) Some(newShip) else None)
       }
-      case None => (HumanPlayer(ships, name, shots, receivedShots :+ shot, numberOfWins, random), false, false)
+      case None => (HumanPlayer(ships, name, shots, receivedShots :+ shot, numberOfWins, random), false, None)
     }
   }
 
@@ -30,12 +30,12 @@ case class HumanPlayer(ships: Seq[Ship], name: String, shots: Map[(Int, Int),Boo
     HumanPlayer(ships, name, shots + (target -> didTouch), receivedShots, numberOfWins, random)
   }
 
-  override def addVictory(): PlayerTrait = {
+  override def addVictory(): Player = {
     this.copy(numberOfWins = numberOfWins + 1)
   }
 
   override def reset(): HumanPlayer = {
-    val newShips: Seq[Ship] = Generator.randomShips(GameConfig.shipsConfig, Seq[Ship](), this.random)
+    val newShips: Seq[Ship] = Generator.createShips(GameConfig.shipsConfig, Seq[Ship]())
     this.copy(ships = newShips, shots = Map[(Int, Int), Boolean](), receivedShots = Seq[(Int, Int)]())
   }
 }

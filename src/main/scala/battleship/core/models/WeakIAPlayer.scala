@@ -6,7 +6,7 @@ import battleship.utils.ships.Generator
 import scala.collection.immutable.Seq
 import scala.util.Random
 
-case class WeakIAPlayer(ships: Seq[Ship], name: String, shots: Map[(Int, Int), Boolean], receivedShots: Seq[(Int, Int)], random: Random, numberOfWins: Int) extends PlayerTrait {
+case class WeakIAPlayer(ships: Seq[Ship], name: String, shots: Map[(Int, Int), Boolean], receivedShots: Seq[(Int, Int)], random: Random, numberOfWins: Int) extends Player {
 
   /**
     *
@@ -21,15 +21,15 @@ case class WeakIAPlayer(ships: Seq[Ship], name: String, shots: Map[(Int, Int), B
     * @param shot
     * @return
     */
-  override def receiveShoot(shot: (Int, Int)): (WeakIAPlayer, Boolean, Boolean) = {
+  override def receiveShoot(shot: (Int, Int)): (WeakIAPlayer, Boolean, Option[Ship]) = {
     val shipShot: Option[Ship] = ships.find(ship => ship.squares.contains(shot))
     shipShot match {
       case Some(ship) => {
         val newShip: Ship = ship.hit(shot)
-        val sank: Boolean = newShip.isSank()
-        (WeakIAPlayer(ships.map { case oldShip if oldShip == ship => newShip; case x => x }, name, shots, receivedShots :+ shot, random, numberOfWins), true, sank)
+        val sunk: Boolean = newShip.isSunk()
+        (WeakIAPlayer(ships.map { case oldShip if oldShip == ship => newShip; case x => x }, name, shots, receivedShots :+ shot, random, numberOfWins), true, if(sunk) Some(newShip) else None)
       }
-      case None => (WeakIAPlayer(ships, name, shots, receivedShots :+ shot, random, numberOfWins), false, false)
+      case None => (WeakIAPlayer(ships, name, shots, receivedShots :+ shot, random, numberOfWins), false, None)
     }
   }
 
@@ -43,11 +43,11 @@ case class WeakIAPlayer(ships: Seq[Ship], name: String, shots: Map[(Int, Int), B
     WeakIAPlayer(ships, name, shots + (target -> didTouch), receivedShots, random, numberOfWins)
   }
 
-  override def addVictory(): PlayerTrait = {
+  override def addVictory(): Player = {
     this.copy(numberOfWins = numberOfWins + 1)
   }
 
-  override def reset(): PlayerTrait = {
+  override def reset(): Player = {
     val newShips: Seq[Ship] = Generator.randomShips(GameConfig.shipsConfig, Seq[Ship](), this.random)
     this.copy(ships = newShips, shots = Map[(Int, Int), Boolean](), receivedShots = Seq[(Int, Int)]())
   }

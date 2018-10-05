@@ -64,13 +64,13 @@ object Main extends App {
   }
 
   @tailrec
-  def mainLoop(gameState: GameState): (PlayerTrait, PlayerTrait) = {
+  def mainLoop(gameState: GameState): (Player, Player) = {
     val currentPlayer = gameState.currentPlayer
     val opponent = gameState.opponent
-    val currentPlayerIsHuman: Boolean = currentPlayer.isInstanceOf[HumanPlayer]
+    val isCurrentPlayerHuman: Boolean = currentPlayer.isInstanceOf[HumanPlayer]
     val winner = gameState.isThereAWinner()
     if(winner.isEmpty) {
-      if(currentPlayerIsHuman) {
+      if(isCurrentPlayerHuman) {
         GameDisplay.clear()
         PlayerDisplay.show(currentPlayer, opponent)
         GridDisplay.showPlayerGrid(currentPlayer.ships, opponent.shots.keys.toSeq)
@@ -78,25 +78,34 @@ object Main extends App {
         PlayerDisplay.shoot()
       }
       val target: (Int, Int) = currentPlayer.shoot()
-      val (newOpponent, touched, sank): (PlayerTrait, Boolean, Boolean) = opponent.receiveShoot(target)
-      if(currentPlayerIsHuman) {
-        if(sank) PlayerDisplay.sank() else if(touched) PlayerDisplay.touched() else PlayerDisplay.notTouched()
+      val (newOpponent, touched, shipSunk): (Player, Boolean, Option[Ship]) = opponent.receiveShoot(target)
+      if(isCurrentPlayerHuman) {
+        if(shipSunk.isDefined) PlayerDisplay.sunk(shipSunk.get.name) else if(touched) PlayerDisplay.touched() else PlayerDisplay.notTouched()
+        GameDisplay.endOfTurn()
+        PlayerInputs.pressAKey()
       }
       val newCurrentPlayer = currentPlayer.didShoot(target, didTouch = touched)
       mainLoop(GameState(newOpponent, newCurrentPlayer, gameState.numberOfGames, gameState.gameCount))
     } else {
-      if(gameState.gameCount <= gameState.numberOfGames) {
+      val continue: Boolean = if(currentPlayer.isInstanceOf[HumanPlayer] || opponent.isInstanceOf[HumanPlayer]){
+        GameDisplay.continue()
+        PlayerInputs.continue() != "q"
+      } else {
+        gameState.gameCount <= gameState.numberOfGames
+      }
+      val addedVictoryWinner = winner.get.addVictory()
+      if(continue) {
         GameDisplay.clear()
         GameDisplay.gameNumber(gameState.gameCount, gameState.numberOfGames)
-        mainLoop(GameState(currentPlayer.reset(), winner.get.addVictory().reset(), gameState.numberOfGames, gameState.gameCount + 1))
+        mainLoop(GameState(currentPlayer.reset(), addedVictoryWinner.reset(), gameState.numberOfGames, gameState.gameCount + 1))
       } else {
-        (currentPlayer, opponent)
+        (currentPlayer, addedVictoryWinner)
       }
     }
   }
-
-  val gameStates = initGameStates(gameType, 100000, randoms)
+  val gameStates = initGameStates(gameType, 100, randoms)
   val results = gameStates.map(gameState => mainLoop(gameState))
+  GameDisplay.end(results)
   val outputFile = new BufferedWriter(new FileWriter("results.csv"))
   val csvFields = "Player 1, Result player 1, Result player 2, Player 2\n" + results.map( result =>  s"${result._1.name}, ${result._1.numberOfWins.toString}, ${result._2.numberOfWins.toString}, ${result._2.name}\n").mkString
   outputFile.write(csvFields)

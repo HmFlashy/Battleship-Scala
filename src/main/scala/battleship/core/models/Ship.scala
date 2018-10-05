@@ -9,7 +9,7 @@ case class Ship(name: String, squares: Map[(Int, Int), Boolean]){
     *
     * @return
     */
-  def isSank(): Boolean = {
+  def isSunk(): Boolean = {
     squares.forall(point => point._2)
   }
 
