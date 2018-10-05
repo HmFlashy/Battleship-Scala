@@ -42,10 +42,6 @@ object PlayerDisplay {
 
   def show(player: PlayerTrait, opponent: PlayerTrait): Unit = {
     println(s"${player.name} it is your turn ->")
-    println(s"Here are your ships ->")
-    GridDisplay.showPlayerGrid(player.ships, opponent.shots.keys.toSeq)
-    println(s"Here are your shots->")
-    GridDisplay.showOpponentGrid(player.shots)
   }
 
 }

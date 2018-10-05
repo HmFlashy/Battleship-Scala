@@ -40,8 +40,6 @@ object Generator {
     val shipConfigOption = shipsConfig.headOption
     shipConfigOption match {
       case Some(shipConfig) => {
-        GridDisplay.showPlayerGrid(existingShips, Seq[(Int, Int)]())
-
         val direction = random.nextInt(2) match {
           case 0 => Ship.HORIZONTAL
           case 1 => Ship.VERTICAL
@@ -52,15 +50,13 @@ object Generator {
         if (!Validator.isOverlapping(ship, existingShips, GameConfig.gridSize)) {
           randomShips(shipsConfig.tail, existingShips :+ ship, random)
         } else {
-          PlayerDisplay.problemPlacingShip(ship)
           randomShips(shipsConfig, existingShips, random)
         }
       }
       case None => {
-        GridDisplay.showPlayerGrid(existingShips, Seq[(Int, Int)]())
         existingShips
       }
-      }
+    }
   }
 
 }

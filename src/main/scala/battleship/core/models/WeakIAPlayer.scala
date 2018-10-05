@@ -13,8 +13,7 @@ case class WeakIAPlayer(ships: Seq[Ship], name: String, shots: Map[(Int, Int), B
     * @return
     */
   override def shoot(): (Int, Int) = {
-    val point = (random.nextInt(GameConfig.gridSize), random.nextInt(GameConfig.gridSize))
-    point
+    (random.nextInt(GameConfig.gridSize), random.nextInt(GameConfig.gridSize))
   }
 
   /**
@@ -57,6 +56,6 @@ case class WeakIAPlayer(ships: Seq[Ship], name: String, shots: Map[(Int, Int), B
 object WeakIAPlayer {
   def generateIA(index: Int, random: Random): WeakIAPlayer = {
     val ships: Seq[Ship] = Generator.randomShips(GameConfig.shipsConfig, Seq[Ship](), random)
-    WeakIAPlayer(ships, "IA"+index, Map[(Int, Int), Boolean](), Seq[(Int, Int)](), random, 0)
+    WeakIAPlayer(ships, "Weak IA "+index, Map[(Int, Int), Boolean](), Seq[(Int, Int)](), random, 0)
   }
 }

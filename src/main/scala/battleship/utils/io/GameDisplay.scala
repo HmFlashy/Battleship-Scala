@@ -3,6 +3,10 @@ package battleship.utils.io
 import battleship.core.models.PlayerTrait
 
 object GameDisplay {
+  def gameNumber(number: Int, oufOf: Int): Unit = {
+    println("Game " + number + "/" + oufOf)
+  }
+
 
   def opponentsTurn(name: String) = {
     println(name + " it is your turn -> Press enter to continue...")
@@ -21,8 +25,10 @@ object GameDisplay {
   def choiceOfPlayers(): Unit = {
     println("""Choose the kind of game you want to play:
     1: Human vs Human
-    2: Human vs AI
-    3: AI vs AI""")
+    2: Human vs WeakAI
+    3: Human vs NormalAI
+    4: Human vs StrongAI
+    5: Test AIs vs AIs""")
   }
 
 
@@ -39,6 +45,6 @@ object GameDisplay {
   }
 
   def clear(): Unit = {
-    print("\u001b[2J")
+    print("\033[H\033[2J")
   }
 }

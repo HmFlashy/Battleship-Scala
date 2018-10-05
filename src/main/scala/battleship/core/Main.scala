@@ -1,23 +1,25 @@
 package battleship.core
 
+import java.io.{BufferedWriter, FileWriter}
+
 import battleship.core.models._
-import battleship.utils.io.{GameDisplay, PlayerDisplay, PlayerInputs}
+import battleship.utils.io.{GameDisplay, GridDisplay, PlayerDisplay, PlayerInputs}
 
 import scala.annotation.tailrec
 import scala.util.Random
 
 object Main extends App {
 
-  val randoms = Seq[Random](new Random(), new Random())
   if(GameConfig.gridSize > 10) {
     GameDisplay.gridTooBig()
     System.exit(1)
   }
   GameDisplay.choiceOfPlayers()
   val gameType = PlayerInputs.choiceOfPlayers()
+  val randoms = if(gameType < 5) Seq[Random](new Random(), new Random()) else Seq[Random](new Random(), new Random(), new Random(), new Random(), new Random(), new Random())
 
 
-  def initPlayers(gameType: Int, randoms: Seq[Random]): (PlayerTrait, PlayerTrait) = {
+  def initGameStates(gameType: Int, numberOfGames: Int, randoms: Seq[Random]): Set[GameState] = {
     gameType match {
       case 1 => {
         GameDisplay.choseYourName(1)
@@ -26,49 +28,77 @@ object Main extends App {
         GameDisplay.choseYourName(2)
         val namePlayerTwo: String = PlayerInputs.choseName()
         val playerTwo: HumanPlayer = HumanPlayer.createPlayer(namePlayerTwo, randoms(0))
-        (playerOne, playerTwo)
+        Set(GameState(playerOne, playerTwo, numberOfGames, 1))
       }
       case 2 => {
         GameDisplay.choseYourName(1)
         val namePlayer: String = PlayerInputs.choseName()
         val player: HumanPlayer = HumanPlayer.createPlayer(namePlayer, randoms(0))
         val ia: WeakIAPlayer = WeakIAPlayer.generateIA(1, randoms(1))
-        (player, ia)
+        Set(GameState(player, ia, numberOfGames, 1))
       }
       case 3 => {
-        val ia1: WeakIAPlayer = WeakIAPlayer.generateIA(1, randoms(0))
-        val ia2: NormalIAPlayer = NormalIAPlayer.generateIA(2, randoms(1))
-        (ia1, ia2)
+        GameDisplay.choseYourName(1)
+        val namePlayer: String = PlayerInputs.choseName()
+        val player: HumanPlayer = HumanPlayer.createPlayer(namePlayer, randoms(0))
+        val ia: NormalIAPlayer = NormalIAPlayer.generateIA(1, randoms(1))
+        Set(GameState(player, ia, numberOfGames, 1))
       }
-      case _ => (HumanPlayer.createPlayer("Player 1", randoms(0)), HumanPlayer.createPlayer("Player 2", randoms(1)))
+      case 4 => {
+        GameDisplay.choseYourName(1)
+        val namePlayer: String = PlayerInputs.choseName()
+        val player: HumanPlayer = HumanPlayer.createPlayer(namePlayer, randoms(0))
+        val ia: StrongAIPlayer = StrongAIPlayer.generateIA(1, randoms(1))
+        Set(GameState(player, ia, numberOfGames, 1))
+      }
+      case _ => {
+        val ia1: WeakIAPlayer = WeakIAPlayer.generateIA(1, randoms(0))
+        val ia2: NormalIAPlayer = NormalIAPlayer.generateIA(1, randoms(1))
+        val ia3: NormalIAPlayer = NormalIAPlayer.generateIA(2, randoms(2))
+        val ia4: StrongAIPlayer = StrongAIPlayer.generateIA(1, randoms(3))
+        val ia5: WeakIAPlayer = WeakIAPlayer.generateIA(2, randoms(4))
+        val ia6: StrongAIPlayer = StrongAIPlayer.generateIA(2, randoms(5))
+        Set(GameState(ia1, ia2, numberOfGames, 1), GameState(ia3, ia4, numberOfGames, 1), GameState(ia5, ia6, numberOfGames, 1))
+      }
     }
   }
 
   @tailrec
-  def mainLoop(gameState: GameState, gameType: Int): Unit = {
+  def mainLoop(gameState: GameState): (PlayerTrait, PlayerTrait) = {
     val currentPlayer = gameState.currentPlayer
     val opponent = gameState.opponent
+    val currentPlayerIsHuman: Boolean = currentPlayer.isInstanceOf[HumanPlayer]
     val winner = gameState.isThereAWinner()
     if(winner.isEmpty) {
-      GameDisplay.clear()
-      GameDisplay.opponentsTurn(currentPlayer.name)
-      PlayerDisplay.show(currentPlayer, opponent)
-      PlayerDisplay.shoot()
+      if(currentPlayerIsHuman) {
+        GameDisplay.clear()
+        PlayerDisplay.show(currentPlayer, opponent)
+        GridDisplay.showPlayerGrid(currentPlayer.ships, opponent.shots.keys.toSeq)
+        GridDisplay.showOpponentGrid(currentPlayer.shots)
+        PlayerDisplay.shoot()
+      }
       val target: (Int, Int) = currentPlayer.shoot()
       val (newOpponent, touched, sank): (PlayerTrait, Boolean, Boolean) = opponent.receiveShoot(target)
-      if(sank) PlayerDisplay.sank() else if(touched) PlayerDisplay.touched() else PlayerDisplay.notTouched()
+      if(currentPlayerIsHuman) {
+        if(sank) PlayerDisplay.sank() else if(touched) PlayerDisplay.touched() else PlayerDisplay.notTouched()
+      }
       val newCurrentPlayer = currentPlayer.didShoot(target, didTouch = touched)
-      mainLoop(GameState(newOpponent, newCurrentPlayer, gameState.numberOfGames), gameType)
+      mainLoop(GameState(newOpponent, newCurrentPlayer, gameState.numberOfGames, gameState.gameCount))
     } else {
-      if(gameState.numberOfGames < 100) {
-        mainLoop(GameState(currentPlayer.reset(), winner.get.addVictory().reset() , gameState.numberOfGames + 1), gameType)
+      if(gameState.gameCount <= gameState.numberOfGames) {
+        GameDisplay.clear()
+        GameDisplay.gameNumber(gameState.gameCount, gameState.numberOfGames)
+        mainLoop(GameState(currentPlayer.reset(), winner.get.addVictory().reset(), gameState.numberOfGames, gameState.gameCount + 1))
       } else {
-        println(currentPlayer.name + " won " + currentPlayer.numberOfWins + " times.")
-        println(opponent.name + " won " + opponent.numberOfWins + " times.")
+        (currentPlayer, opponent)
       }
     }
   }
 
-  val players = initPlayers(gameType, randoms)
-  mainLoop(GameState(players._1, players._2, 0), gameType)
+  val gameStates = initGameStates(gameType, 100000, randoms)
+  val results = gameStates.map(gameState => mainLoop(gameState))
+  val outputFile = new BufferedWriter(new FileWriter("results.csv"))
+  val csvFields = "Player 1, Result player 1, Result player 2, Player 2\n" + results.map( result =>  s"${result._1.name}, ${result._1.numberOfWins.toString}, ${result._2.numberOfWins.toString}, ${result._2.name}\n").mkString
+  outputFile.write(csvFields)
+  outputFile.close()
 }

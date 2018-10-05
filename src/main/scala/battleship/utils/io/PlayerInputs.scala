@@ -38,7 +38,7 @@ object PlayerInputs {
 
   def choiceOfPlayers(): Int = {
     val choice = StdIn.readLine()
-    val Pattern = "(^[0-3]$)".r
+    val Pattern = "(^[1-5]$)".r
     choice match {
       case Pattern(p) => {
         p.toInt

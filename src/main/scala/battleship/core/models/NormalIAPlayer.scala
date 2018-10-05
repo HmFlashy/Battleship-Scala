@@ -4,6 +4,7 @@ import battleship.utils.ships.Generator
 
 import scala.annotation.tailrec
 import scala.collection.immutable.Seq
+import scala.io.StdIn
 import scala.util.Random
 
 case class NormalIAPlayer(ships: Seq[Ship], name: String, shots: Map[(Int, Int), Boolean], receivedShots: Seq[(Int, Int)], random: Random, numberOfWins: Int) extends PlayerTrait {
@@ -65,16 +66,13 @@ case class NormalIAPlayer(ships: Seq[Ship], name: String, shots: Map[(Int, Int),
           slot._2 < 0 ||
           shots.contains(slot)
       ){
-        val newSlotAndDirection = if(slot == origin)
-          nextSlot(origin, (origin._1 - 1, origin._2 - 1), rayon, RIGHT)
-        else
-          nextSlot(origin, slot, rayon, direction)
-        findClosestFreeSlot(origin, shots, if(newSlotAndDirection._3) rayon + 1 else rayon, newSlotAndDirection._1, newSlotAndDirection._2)
+          val newSlotAndDirection = nextSlot(origin, slot, rayon, direction)
+          findClosestFreeSlot(origin, shots, if(newSlotAndDirection._3) rayon + 1 else rayon, newSlotAndDirection._1, newSlotAndDirection._2)
       } else {
         slot
       }
     }
-    findClosestFreeSlot(point, shots, 1, point, UP)
+    findClosestFreeSlot(point, shots, 0, point, UP)
   }
 
   /**
@@ -88,9 +86,9 @@ case class NormalIAPlayer(ships: Seq[Ship], name: String, shots: Map[(Int, Int),
       case Some(ship) => {
         val newShip: Ship = ship.hit(shot)
         val sank: Boolean = newShip.isSank()
-        (NormalIAPlayer(ships.map { case oldShip if oldShip == ship => newShip; case x => x }, name, shots, receivedShots :+ shot, random, numberOfWins), true, sank)
+        (this.copy( ships = ships.map { case oldShip if oldShip == ship => newShip; case x => x }, receivedShots = receivedShots :+ shot), true, sank)
       }
-      case None => (NormalIAPlayer(ships, name, shots, receivedShots :+ shot, random, numberOfWins), false, false)
+      case None => (this.copy(receivedShots = receivedShots :+ shot), false, false)
     }
   }
 
@@ -117,6 +115,6 @@ case class NormalIAPlayer(ships: Seq[Ship], name: String, shots: Map[(Int, Int),
 object NormalIAPlayer {
   def generateIA(index: Int, random: Random): NormalIAPlayer = {
     val ships: Seq[Ship] = Generator.randomShips(GameConfig.shipsConfig, Seq[Ship](), random)
-    NormalIAPlayer(ships, "IA"+index, Map[(Int, Int), Boolean](), Seq[(Int, Int)](), random, 0)
+    NormalIAPlayer(ships, "Normal IA "+index, Map[(Int, Int), Boolean](), Seq[(Int, Int)](), random, 0)
   }
 }

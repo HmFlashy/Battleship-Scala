@@ -45,6 +45,8 @@ object GridDisplay {
   }
 
   def showPlayerGrid(ships: Seq[Ship], shots: Seq[(Int, Int)]): Unit = {
+    println(s"Here are your ships ->")
+
     var grid = Array.ofDim[String](GameConfig.gridSize, GameConfig.gridSize).toList.map((array) => Array.fill[String](GameConfig.gridSize)(WATER + BLOCK).toList)
     shots.foreach((shot) => {
       grid = grid.updated(shot._1, grid(shot._1).updated(shot._2, MISSED + BLOCK))
@@ -63,6 +65,8 @@ object GridDisplay {
   }
 
   def showOpponentGrid(shots: Map[(Int, Int),Boolean]):Unit = {
+    println(s"Here are your shots->")
+
     var grid = Array.ofDim[String](GameConfig.gridSize, GameConfig.gridSize).toList.map((array) => Array.fill[String](GameConfig.gridSize)(WATER + BLOCK).toList)
     shots.foreach((shot) => {
       grid = grid.updated(shot._1._1, grid(shot._1._1).updated(shot._1._2, if(shot._2) TOUCHED + BLOCK else NOT_TOUCHED + BLOCK))

@@ -1,5 +1,9 @@
 import Dependencies._
 
+name := """Battleship-HugoMaitre"""
+
+version := "1.0"
+
 lazy val root = (project in file(".")).
   settings(
     inThisBuild(List(
@@ -8,5 +12,7 @@ lazy val root = (project in file(".")).
       version      := "0.1.0-SNAPSHOT"
     )),
     name := "Battleship",
-    libraryDependencies += scalaTest % Test
-  )
+    libraryDependencies ++=  Seq(
+      scalaTest % Test
+    )
+)

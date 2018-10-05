@@ -2,7 +2,7 @@ package battleship.core
 
 import battleship.core.models.PlayerTrait
 
-case class GameState(currentPlayer: PlayerTrait, opponent: PlayerTrait, numberOfGames: Int) {
+case class GameState(currentPlayer: PlayerTrait, opponent: PlayerTrait, numberOfGames:Int, gameCount: Int) {
 
   def isThereAWinner(): Option[PlayerTrait] = {
     if(currentPlayer.numberOfShipsLeft() == 0){
@@ -19,5 +19,5 @@ case class GameState(currentPlayer: PlayerTrait, opponent: PlayerTrait, numberOf
 
 object GameState {
 
-  def apply(currentPlayer: PlayerTrait, opponent: PlayerTrait, numberOfTurns: Int): GameState = new GameState(currentPlayer, opponent, numberOfTurns)
+  def apply(currentPlayer: PlayerTrait, opponent: PlayerTrait, numberOfGames: Int, gameCount: Int): GameState = new GameState(currentPlayer, opponent, numberOfGames, gameCount)
 }
