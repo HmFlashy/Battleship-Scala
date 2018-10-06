@@ -1,10 +1,8 @@
 package battleship.utils.io
 
-import battleship.core.GameConfig
 import battleship.core.models.Ship
 
 import scala.annotation.tailrec
-import scala.io.StdIn
 
 object GridDisplay {
 

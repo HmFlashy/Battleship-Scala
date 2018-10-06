@@ -89,7 +89,10 @@ object Main extends App {
     val opponent = gameState.opponent
     val isCurrentPlayerHuman: Boolean = currentPlayer.isInstanceOf[HumanPlayer]
     val winner = gameState.isThereAWinner()
+
+
     if(winner.isEmpty) {
+
       if(isCurrentPlayerHuman) {
         GameDisplay.clear()
         PlayerDisplay.show(currentPlayer, opponent)
@@ -106,7 +109,10 @@ object Main extends App {
       }
       val newCurrentPlayer = currentPlayer.didShoot(target, didTouch = touched)
       mainLoop(GameState(newOpponent, newCurrentPlayer, gameState.numberOfGames, gameState.gameCount), gameConfig)
+
+
     } else {
+
       val addedVictoryWinner = winner.get.addVictory()
       val continue: Boolean = if(currentPlayer.isInstanceOf[HumanPlayer] || opponent.isInstanceOf[HumanPlayer]){
         GameDisplay.winner(addedVictoryWinner.name)
@@ -122,6 +128,7 @@ object Main extends App {
       } else {
         (currentPlayer, addedVictoryWinner)
       }
+
     }
   }
   val gameStates = initGameStates(gameType, 100, randoms, gameConfig)
