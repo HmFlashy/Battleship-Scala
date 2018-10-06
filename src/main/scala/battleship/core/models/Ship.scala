@@ -6,7 +6,7 @@ case class Ship(name: String, squares: Map[(Int, Int), Boolean]) {
 
   /**
     *
-    * @return
+    * @return True if the ship is sunk false otherwise
     */
   def isSunk(): Boolean = {
     squares.forall(point => point._2)
@@ -14,9 +14,8 @@ case class Ship(name: String, squares: Map[(Int, Int), Boolean]) {
 
   /**
     *
-    * @param x
-    * @param y
-    * @return
+    * @param shot The coordinates where the ship is hit
+    * @return The ship modified with his slot hit updated to true
     */
   def hit(shot: (Int, Int)): Ship = {
     Ship(name, squares.updated(shot, true))
@@ -24,6 +23,7 @@ case class Ship(name: String, squares: Map[(Int, Int), Boolean]) {
 }
 
 object Ship {
+
   val HORIZONTAL = "H"
   val VERTICAL = "V"
 
@@ -35,21 +35,16 @@ object Ship {
 
 
   /**
+    * Use a tail recursion within the method
     *
-    * @param name
-    * @param isHorizontal
-    * @param point
-    * @return
+    * @param name Name of the ship
+    * @param direction Direction of the ship (Ship.HORIZONTAL or Ship.VERTICAl)
+    * @param point The origin of the ship
+    * @param shipsConfig The configuration of the ships
+    * @return A ship configured
     */
   def convertInputsToShip(name: String, direction: String, point: (Int, Int), shipsConfig: Map[String, Int]): Ship = {
-    /**
-      *
-      * @param squareLeft
-      * @param isHorizontal
-      * @param point
-      * @param squares
-      * @return
-      */
+
     @tailrec
     def convertInputsToShipTR(name: String, squareLeft: Int, direction: String, point: (Int, Int), squares: Map[(Int, Int), Boolean], shipsConfig: Map[String, Int]): Ship = {
       squareLeft match {

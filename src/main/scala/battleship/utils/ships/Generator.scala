@@ -10,6 +10,13 @@ import scala.util.Random
 object Generator {
 
 
+  /**
+    *
+    * @param shipsConfig The configuration of the ships
+    * @param existingShips The ships that already existing
+    * @param gridSize The size fo the grid
+    * @return A sequence of ships that do not overlap each other and created manually
+    */
   @tailrec
   def createShips(shipsConfig: Map[String, Int], existingShips: Seq[Ship], gridSize: Int): Seq[Ship] = {
 
@@ -22,7 +29,7 @@ object Generator {
         val shipInfo: ShipInformation = PlayerInputs.getShipInformation(shipConfig, gridSize)
         val ship = Ship.convertInputsToShip(shipConfig._1, shipInfo.direction, shipInfo.point, shipsConfig)
 
-        if (!Validator.isOverlapping(ship, existingShips, gridSize)) {
+        if (!Validator.isOverlappingOrOut(ship, existingShips, gridSize)) {
           createShips(shipsConfig.tail, existingShips :+ ship, gridSize)
         } else {
           PlayerDisplay.problemPlacingShip(ship)
@@ -36,6 +43,13 @@ object Generator {
     }
   }
 
+  /**
+    *
+    * @param shipsConfig The configuration of the ships
+    * @param existingShips The ships that already existing
+    * @param gridSize The size fo the grid
+    * @return A sequence of ships that do not overlap each other and created randomly
+    */
   @tailrec
   def randomShips(shipsConfig: Map[String, Int], existingShips: Seq[Ship], random: Random, gridSize: Int): Seq[Ship] = {
     val shipConfigOption = shipsConfig.headOption
@@ -48,7 +62,7 @@ object Generator {
         val shipInfo: ShipInformation = ShipInformation(direction, (random.nextInt(gridSize), random.nextInt(gridSize)))
         val ship = Ship.convertInputsToShip(shipConfig._1, shipInfo.direction, shipInfo.point, shipsConfig)
 
-        if (!Validator.isOverlapping(ship, existingShips, gridSize)) {
+        if (!Validator.isOverlappingOrOut(ship, existingShips, gridSize)) {
           randomShips(shipsConfig.tail, existingShips :+ ship, random, gridSize)
         } else {
           randomShips(shipsConfig, existingShips, random, gridSize)

@@ -16,6 +16,7 @@ object Main extends App {
     System.exit(1)
   }
   GameDisplay.clear()
+  GameDisplay.introduction()
   GameDisplay.choiceOfPlayers()
   val gameType = PlayerInputs.choiceOfPlayers()
   val randoms = if (gameType < 5) Seq[Random](new Random(), new Random()) else Seq[Random](new Random(), new Random(), new Random(), new Random(), new Random(), new Random())
