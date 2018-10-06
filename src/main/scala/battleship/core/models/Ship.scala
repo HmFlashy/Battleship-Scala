@@ -42,7 +42,7 @@ object Ship {
     * @param point
     * @return
     */
-  def convertInputsToShip(name: String, direction: String, point: (Int, Int)): Ship = {
+  def convertInputsToShip(name: String, direction: String, point: (Int, Int), shipsConfig: Map[String, Int]): Ship = {
     /**
       *
       * @param squareLeft
@@ -52,17 +52,17 @@ object Ship {
       * @return
       */
     @tailrec
-    def convertInputsToShipTR(name: String, squareLeft: Int, direction: String, point: (Int, Int), squares: Map[(Int, Int), Boolean]): Ship = {
+    def convertInputsToShipTR(name: String, squareLeft: Int, direction: String, point: (Int, Int), squares: Map[(Int, Int), Boolean], shipsConfig: Map[String, Int]): Ship = {
       squareLeft match {
         case 0 => Ship(name, squares)
         case _ => {
           val newSquares = squares.+(point -> false)
           val newPoint = if(direction == Ship.HORIZONTAL) (point._1, point._2 + 1) else (point._1 + 1, point._2)
-          convertInputsToShipTR(name, squareLeft - 1, direction, newPoint, newSquares)
+          convertInputsToShipTR(name, squareLeft - 1, direction, newPoint, newSquares, shipsConfig)
         }
       }
     }
-    convertInputsToShipTR(name, GameConfig.shipsConfig(name), direction, point, Map[(Int, Int), Boolean]())
+    convertInputsToShipTR(name, shipsConfig(name), direction, point, Map[(Int, Int), Boolean](), shipsConfig)
   }
 
 }

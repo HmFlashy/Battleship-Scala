@@ -3,6 +3,11 @@ package battleship.utils.io
 import battleship.core.models.Player
 
 object GameDisplay {
+  def winner(name: String) = {
+    println(name + " won this game, good job.")
+    println()
+  }
+
   def continue() = {
     println("Press a key to play a new game (q to quit)")
   }
@@ -20,6 +25,7 @@ object GameDisplay {
       println()
       println()
     })
+    println("You can see the results in the results.csv file.\n")
   }
 
 

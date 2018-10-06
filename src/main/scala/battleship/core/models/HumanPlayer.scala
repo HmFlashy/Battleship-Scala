@@ -10,8 +10,12 @@ import scala.util.Random
 
 case class HumanPlayer(ships: Seq[Ship], name: String, shots: Map[(Int, Int),Boolean], receivedShots: Seq[(Int, Int)], numberOfWins: Int, random: Random) extends Player {
 
-  override def shoot(): (Int, Int) = {
-    PlayerInputs.getPoint()
+  /**
+    * Get the target
+    * @return (Int, Int) A tuple that indicates where the human player is shooting
+    */
+  override def shoot(gridSize: Int): (Int, Int) = {
+    PlayerInputs.getPoint(gridSize)
   }
 
   override def receiveShoot(shot: (Int, Int)): (HumanPlayer, Boolean, Option[Ship]) = {
@@ -34,17 +38,16 @@ case class HumanPlayer(ships: Seq[Ship], name: String, shots: Map[(Int, Int),Boo
     this.copy(numberOfWins = numberOfWins + 1)
   }
 
-  override def reset(): HumanPlayer = {
-    val newShips: Seq[Ship] = Generator.createShips(GameConfig.shipsConfig, Seq[Ship]())
+  override def reset(shipsConfig: Map[String, Int], gridSize: Int): HumanPlayer = {
+    val newShips: Seq[Ship] = Generator.createShips(shipsConfig, Seq[Ship](), gridSize)
     this.copy(ships = newShips, shots = Map[(Int, Int), Boolean](), receivedShots = Seq[(Int, Int)]())
   }
 }
 
 object HumanPlayer {
 
-  def createPlayer(name: String, random: Random): HumanPlayer = {
-    PlayerDisplay.placeYourShips(name)
-    val ships = Generator.createShips(GameConfig.shipsConfig, Seq[Ship]())
+  def createPlayer(name: String, random: Random, shipsConfig: Map[String, Int], gridSize: Int): HumanPlayer = {
+    val ships = Generator.createShips(shipsConfig, Seq[Ship](), gridSize)
     new HumanPlayer(ships, name, shots = Map[(Int, Int), Boolean](), Seq[(Int, Int)](), 0, random)
   }
 

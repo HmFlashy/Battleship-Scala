@@ -11,9 +11,9 @@ case class NormalIAPlayer(ships: Seq[Ship], name: String, shots: Map[(Int, Int),
     *
     * @return
     */
-  override def shoot(): (Int, Int) = {
-    val point = (random.nextInt(GameConfig.gridSize), random.nextInt(GameConfig.gridSize))
-    Player.findClosestFreeSlot(point, shots, 0, point, Player.UP)
+  override def shoot(gridSize: Int): (Int, Int) = {
+    val point = (random.nextInt(gridSize), random.nextInt(gridSize))
+    Player.findClosestFreeSlot(point, shots, 0, point, Player.UP, gridSize)
   }
 
   /**
@@ -47,15 +47,15 @@ case class NormalIAPlayer(ships: Seq[Ship], name: String, shots: Map[(Int, Int),
     this.copy(numberOfWins = numberOfWins + 1)
   }
 
-  override def reset(): NormalIAPlayer = {
-    val newShips: Seq[Ship] = Generator.randomShips(GameConfig.shipsConfig, Seq[Ship](), this.random)
+  override def reset(shipsConfig: Map[String, Int], gridSize: Int): NormalIAPlayer = {
+    val newShips: Seq[Ship] = Generator.randomShips(shipsConfig, Seq[Ship](), this.random, gridSize)
     this.copy(ships = newShips, shots = Map[(Int, Int), Boolean](), receivedShots = Seq[(Int, Int)]())
   }
 }
 
 object NormalIAPlayer {
-  def generateIA(index: Int, random: Random): NormalIAPlayer = {
-    val ships: Seq[Ship] = Generator.randomShips(GameConfig.shipsConfig, Seq[Ship](), random)
+  def generateIA(index: Int, random: Random, shipsConfig: Map[String, Int], gridSize: Int): NormalIAPlayer = {
+    val ships: Seq[Ship] = Generator.randomShips(shipsConfig, Seq[Ship](), random, gridSize)
     NormalIAPlayer(ships, "Normal IA "+index, Map[(Int, Int), Boolean](), Seq[(Int, Int)](), random, 0)
   }
 }

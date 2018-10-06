@@ -1,11 +1,9 @@
 package battleship.core.models
 
-import battleship.core.GameConfig
 import battleship.utils.ships.Generator
 
 import scala.annotation.tailrec
 import scala.collection.immutable.Seq
-import scala.io.StdIn
 import scala.util.Random
 
 case class StrongAIPlayer(ships: Seq[Ship], name: String, shots: Map[(Int, Int),Boolean], receivedShots: Seq[(Int, Int)], numberOfWins: Int, random: Random) extends Player {
@@ -14,7 +12,7 @@ case class StrongAIPlayer(ships: Seq[Ship], name: String, shots: Map[(Int, Int),
     *
     * @return
     */
-  override def shoot(): (Int, Int) = {
+  override def shoot(gridSize: Int): (Int, Int) = {
     val hits = shots.filter(shot => shot._2).keys.toSet
 
     @tailrec
@@ -36,8 +34,8 @@ case class StrongAIPlayer(ships: Seq[Ship], name: String, shots: Map[(Int, Int),
 
     val shotOption = hitHasNotShotNeighbours(hits)
     shotOption.getOrElse({
-      val point = (random.nextInt(GameConfig.gridSize), random.nextInt(GameConfig.gridSize))
-      Player.findClosestFreeSlot(point, shots, 0, point, Player.UP)
+      val point = (random.nextInt(gridSize), random.nextInt(gridSize))
+      Player.findClosestFreeSlot(point, shots, 0, point, Player.UP, gridSize)
     })
   }
 
@@ -73,16 +71,16 @@ case class StrongAIPlayer(ships: Seq[Ship], name: String, shots: Map[(Int, Int),
     this.copy(numberOfWins = numberOfWins + 1)
   }
 
-  override def reset(): StrongAIPlayer = {
-    val newShips: Seq[Ship] = Generator.randomShips(GameConfig.shipsConfig, Seq[Ship](), this.random)
+  override def reset(shipsConfig: Map[String, Int], gridSize: Int): StrongAIPlayer = {
+    val newShips: Seq[Ship] = Generator.randomShips(shipsConfig, Seq[Ship](), this.random, gridSize)
     this.copy(ships = newShips, shots = Map[(Int, Int), Boolean](), receivedShots = Seq[(Int, Int)]())
   }
 }
 
 
 object StrongAIPlayer {
-  def generateIA(index: Int, random: Random): StrongAIPlayer = {
-    val ships: Seq[Ship] = Generator.randomShips(GameConfig.shipsConfig, Seq[Ship](), random)
+  def generateIA(index: Int, random: Random, shipsConfig: Map[String, Int], gridSize: Int): StrongAIPlayer = {
+    val ships: Seq[Ship] = Generator.randomShips(shipsConfig, Seq[Ship](), random, gridSize)
     StrongAIPlayer(ships, "Strong IA "+index, Map[(Int, Int), Boolean](), Seq[(Int, Int)](), 0, random)
   }
 }

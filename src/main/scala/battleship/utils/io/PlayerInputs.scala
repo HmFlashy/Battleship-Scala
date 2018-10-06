@@ -28,11 +28,11 @@ object PlayerInputs {
     }
   }
 
-  def getShipInformation(shipConfig: (String, Int)): ShipInformation = {
+  def getShipInformation(shipConfig: (String, Int), gridSize: Int): ShipInformation = {
     PlayerDisplay.setNewShip(shipConfig._1, shipConfig._2)
     val direction: String = PlayerInputs.getDirection()
     PlayerDisplay.getOriginShip(shipConfig._1, shipConfig._2)
-    val point: (Int, Int) = PlayerInputs.getPoint()
+    val point: (Int, Int) = PlayerInputs.getPoint(gridSize)
     ShipInformation(direction, point)
   }
 
@@ -57,18 +57,18 @@ object PlayerInputs {
   }
 
   @tailrec
-  def getPoint(): (Int, Int) = {
+  def getPoint(gridSize: Int): (Int, Int) = {
     val coordinates: String = StdIn.readLine()
-    val Pattern = ("(^[a-zA-Z][0-"+(GameConfig.gridSize-1)+"]$)").r
+    val Pattern = ("(^[a-zA-Z][0-"+(gridSize-1)+"]$)").r
     coordinates match {
       case Pattern(p) => {
         val line = p(0).toUpper.toInt - 'A'
-        if(line - GameConfig.gridSize < 0)
+        if(line - gridSize < 0)
           (line, p(1) - '0'.toInt)
         else
-          getPoint()
+          getPoint(gridSize)
       }
-      case _ => getPoint()
+      case _ => getPoint(gridSize)
     }
   }
 }

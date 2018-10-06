@@ -1,7 +1,5 @@
 package battleship.core.models
 
-import battleship.core.GameConfig
-
 import scala.annotation.tailrec
 import scala.collection.immutable.Seq
 import scala.util.Random
@@ -19,7 +17,7 @@ trait Player {
     *
     * @return
     */
-  def shoot(): (Int, Int)
+  def shoot(gridSize: Int): (Int, Int)
 
   /**
     *
@@ -55,7 +53,7 @@ trait Player {
 
   def addVictory(): Player
 
-  def reset(): Player
+  def reset(shipsConfig: Map[String, Int], gridSize: Int): Player
 
 }
 
@@ -103,16 +101,16 @@ object Player {
   }
 
   @tailrec
-  def findClosestFreeSlot(origin: (Int, Int), shots: Map[(Int, Int), Boolean], rayon: Int, slot: (Int, Int), direction: Int): (Int, Int) = {
+  def findClosestFreeSlot(origin: (Int, Int), shots: Map[(Int, Int), Boolean], rayon: Int, slot: (Int, Int), direction: Int, gridSize: Int): (Int, Int) = {
     if(
-      slot._1 >= GameConfig.gridSize ||
-        slot._1 < 0 ||
-        slot._2 >= GameConfig.gridSize ||
-        slot._2 < 0 ||
-        shots.contains(slot)
+      slot._1 >= gridSize ||
+      slot._1 < 0 ||
+      slot._2 >= gridSize ||
+      slot._2 < 0 ||
+      shots.contains(slot)
     ){
       val newSlotAndDirection = nextSlot(origin, slot, rayon, direction)
-      findClosestFreeSlot(origin, shots, if(newSlotAndDirection._3) rayon + 1 else rayon, newSlotAndDirection._1, newSlotAndDirection._2)
+      findClosestFreeSlot(origin, shots, if(newSlotAndDirection._3) rayon + 1 else rayon, newSlotAndDirection._1, newSlotAndDirection._2, gridSize)
     } else {
       slot
     }

@@ -1,6 +1,5 @@
 package battleship.core.models
 
-import battleship.core.GameConfig
 import battleship.utils.ships.Generator
 
 import scala.collection.immutable.Seq
@@ -12,8 +11,8 @@ case class WeakIAPlayer(ships: Seq[Ship], name: String, shots: Map[(Int, Int), B
     *
     * @return
     */
-  override def shoot(): (Int, Int) = {
-    (random.nextInt(GameConfig.gridSize), random.nextInt(GameConfig.gridSize))
+  override def shoot(gridSize: Int): (Int, Int) = {
+    (random.nextInt(gridSize), random.nextInt(gridSize))
   }
 
   /**
@@ -47,15 +46,15 @@ case class WeakIAPlayer(ships: Seq[Ship], name: String, shots: Map[(Int, Int), B
     this.copy(numberOfWins = numberOfWins + 1)
   }
 
-  override def reset(): Player = {
-    val newShips: Seq[Ship] = Generator.randomShips(GameConfig.shipsConfig, Seq[Ship](), this.random)
+  override def reset(shipsConfig: Map[String, Int], gridSize: Int): Player = {
+    val newShips: Seq[Ship] = Generator.randomShips(shipsConfig, Seq[Ship](), this.random, gridSize)
     this.copy(ships = newShips, shots = Map[(Int, Int), Boolean](), receivedShots = Seq[(Int, Int)]())
   }
 }
 
 object WeakIAPlayer {
-  def generateIA(index: Int, random: Random): WeakIAPlayer = {
-    val ships: Seq[Ship] = Generator.randomShips(GameConfig.shipsConfig, Seq[Ship](), random)
+  def generateIA(index: Int, random: Random, shipsConfig: Map[String, Int], gridSize: Int): WeakIAPlayer = {
+    val ships: Seq[Ship] = Generator.randomShips(shipsConfig, Seq[Ship](), random, gridSize)
     WeakIAPlayer(ships, "Weak IA "+index, Map[(Int, Int), Boolean](), Seq[(Int, Int)](), random, 0)
   }
 }
