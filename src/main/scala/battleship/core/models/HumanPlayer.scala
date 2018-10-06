@@ -37,7 +37,7 @@ case class HumanPlayer(ships: Seq[Ship], name: String, shots: Map[(Int, Int), Bo
 
   /**
     *
-    * @param target Coordinated of the shot
+    * @param target Coordinates of the shot
     * @param didTouch Boolean that indicates if the shot did touch an opponent ship or not
     * @return The player modified
     */

@@ -10,7 +10,7 @@ import scala.util.Random
 
 object Main extends App {
 
-  val gameConfig = GameConfig()
+  val gameConfig = GameConfig(GameConfig.DEFAULT)
   if (gameConfig.gridSize > 10) {
     GameDisplay.gridTooBig()
     System.exit(1)

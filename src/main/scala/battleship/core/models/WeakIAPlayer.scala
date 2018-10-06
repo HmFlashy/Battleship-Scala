@@ -47,7 +47,7 @@ case class WeakIAPlayer(ships: Seq[Ship], name: String, shots: Map[(Int, Int), B
     *
     * @return The player modified with a victory added
     */
-  override def addVictory(): Player = {
+  override def addVictory(): WeakIAPlayer = {
     this.copy(numberOfWins = numberOfWins + 1)
   }
 

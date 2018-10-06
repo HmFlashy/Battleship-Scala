@@ -1,15 +1,32 @@
 package battleship.core
 
+import battleship.core.models.Ship
 import battleship.core.models.Ship._
 
 import scala.collection.immutable.ListMap
 
-case class GameConfig() {
+case class GameConfig(shipsConfig: Map[String, Int], gridSize: Int) {
+
+  private val configIsCorrect = shipsConfig.map(shipConfig => {
+    val nameShip = shipConfig._1
+    shipConfig._2 < gridSize && (nameShip == Ship.DESTROYER || nameShip == Ship.BATTLESHIP || nameShip == Ship.CARRIER || nameShip == Ship.SUBMARINE || nameShip == Ship.CRUISER)
+  }).size == shipsConfig.size
+
+  if(!configIsCorrect){
+    throw new IllegalArgumentException("The ships configuration is not correct")
+  }
+}
+
+object GameConfig {
+
+  val DEFAULT: Int = 1
+  val CUSTOM: Int = 2
+
 
   /**
     * The configuration of the ships of the game
     */
-  val shipsConfig: Map[String, Int] = ListMap(Map(
+  private val DEFAULT_SHIP_CONFIG: Map[String, Int] = ListMap(Map(
     CARRIER -> 5,
     BATTLESHIP -> 4,
     CRUISER -> 3,
@@ -20,5 +37,12 @@ case class GameConfig() {
   /**
     * The size of the grid
     */
-  val gridSize: Int = 10
+  private val DEFAULT_GRID_SIZE: Int = 10
+
+  def apply(typeConfig: Int): GameConfig = {
+    typeConfig match {
+      case DEFAULT => new GameConfig(DEFAULT_SHIP_CONFIG, DEFAULT_GRID_SIZE)
+      case _ => new GameConfig(DEFAULT_SHIP_CONFIG, DEFAULT_GRID_SIZE)
+    }
+  }
 }
