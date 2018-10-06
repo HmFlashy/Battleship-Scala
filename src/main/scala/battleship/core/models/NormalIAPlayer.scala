@@ -1,5 +1,5 @@
 package battleship.core.models
-import battleship.core.GameConfig
+
 import battleship.utils.ships.Generator
 
 import scala.collection.immutable.Seq
@@ -27,7 +27,7 @@ case class NormalIAPlayer(ships: Seq[Ship], name: String, shots: Map[(Int, Int),
       case Some(ship) => {
         val newShip: Ship = ship.hit(shot)
         val sunk: Boolean = newShip.isSunk()
-        (this.copy( ships = ships.map { case oldShip if oldShip == ship => newShip; case x => x }, receivedShots = receivedShots :+ shot), true, if(sunk) Some(newShip) else None)
+        (this.copy(ships = ships.map { case oldShip if oldShip == ship => newShip; case x => x }, receivedShots = receivedShots :+ shot), true, if (sunk) Some(newShip) else None)
       }
       case None => (this.copy(receivedShots = receivedShots :+ shot), false, None)
     }
@@ -40,8 +40,8 @@ case class NormalIAPlayer(ships: Seq[Ship], name: String, shots: Map[(Int, Int),
     * @return
     */
   override def didShoot(target: (Int, Int), didTouch: Boolean): NormalIAPlayer = {
-      this.copy(shots = shots + (target -> didTouch))
-    }
+    this.copy(shots = shots + (target -> didTouch))
+  }
 
   override def addVictory(): NormalIAPlayer = {
     this.copy(numberOfWins = numberOfWins + 1)
@@ -56,6 +56,6 @@ case class NormalIAPlayer(ships: Seq[Ship], name: String, shots: Map[(Int, Int),
 object NormalIAPlayer {
   def generateIA(index: Int, random: Random, shipsConfig: Map[String, Int], gridSize: Int): NormalIAPlayer = {
     val ships: Seq[Ship] = Generator.randomShips(shipsConfig, Seq[Ship](), random, gridSize)
-    NormalIAPlayer(ships, "Normal IA "+index, Map[(Int, Int), Boolean](), Seq[(Int, Int)](), random, 0)
+    NormalIAPlayer(ships, "Normal IA " + index, Map[(Int, Int), Boolean](), Seq[(Int, Int)](), random, 0)
   }
 }

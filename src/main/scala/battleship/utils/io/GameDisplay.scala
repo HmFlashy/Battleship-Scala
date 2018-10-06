@@ -13,15 +13,15 @@ object GameDisplay {
   }
 
 
-  def end(results: Set[(Player, Player)]):Unit = {
+  def end(results: Set[(Player, Player)]): Unit = {
     println()
     results.zipWithIndex.foreach(resultZip => {
       val game = resultZip._1
       val index = resultZip._2
       println("Fight " + (index + 1) + s": ${game._1.name}  VS ${game._2.name}".toUpperCase())
       println()
-      println(s"${game._1.name} won ${game._1.numberOfWins} time${if(game._1.numberOfWins > 1) 's' else ""} ")
-      println(s"${game._2.name} won ${game._2.numberOfWins} time${if(game._2.numberOfWins > 1) 's' else ""} ")
+      println(s"${game._1.name} won ${game._1.numberOfWins} time${if (game._1.numberOfWins > 1) 's' else ""} ")
+      println(s"${game._2.name} won ${game._2.numberOfWins} time${if (game._2.numberOfWins > 1) 's' else ""} ")
       println()
       println()
     })
@@ -48,13 +48,14 @@ object GameDisplay {
   }
 
 
-  def choseYourName(playerNumber: Int)  = {
+  def choseYourName(playerNumber: Int) = {
     println(s"Player ${playerNumber}, chose your name")
   }
 
 
   def choiceOfPlayers(): Unit = {
-    println("""Choose the kind of game you want to play:
+    println(
+      """Choose the kind of game you want to play:
     1: Human vs Human
     2: Human vs WeakAI
     3: Human vs NormalAI
@@ -66,7 +67,7 @@ object GameDisplay {
   def gameIsOver(player: Player): Unit = {
     println(
       s"""
-        |${player.name} won the game !!!
+         |${player.name} won the game !!!
       """.stripMargin)
   }
 

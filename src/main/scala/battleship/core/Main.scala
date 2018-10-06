@@ -11,14 +11,14 @@ import scala.util.Random
 object Main extends App {
 
   val gameConfig = GameConfig()
-  if(gameConfig.gridSize > 10) {
+  if (gameConfig.gridSize > 10) {
     GameDisplay.gridTooBig()
     System.exit(1)
   }
   GameDisplay.clear()
   GameDisplay.choiceOfPlayers()
   val gameType = PlayerInputs.choiceOfPlayers()
-  val randoms = if(gameType < 5) Seq[Random](new Random(), new Random()) else Seq[Random](new Random(), new Random(), new Random(), new Random(), new Random(), new Random())
+  val randoms = if (gameType < 5) Seq[Random](new Random(), new Random()) else Seq[Random](new Random(), new Random(), new Random(), new Random(), new Random(), new Random())
 
   /**
     *
@@ -91,9 +91,9 @@ object Main extends App {
     val winner = gameState.isThereAWinner()
 
 
-    if(winner.isEmpty) {
+    if (winner.isEmpty) {
 
-      if(isCurrentPlayerHuman) {
+      if (isCurrentPlayerHuman) {
         GameDisplay.clear()
         PlayerDisplay.show(currentPlayer, opponent)
         GridDisplay.showPlayerGrid(currentPlayer.ships, opponent.shots.keys.toSeq, gameConfig.gridSize)
@@ -102,8 +102,8 @@ object Main extends App {
       }
       val target: (Int, Int) = currentPlayer.shoot(gameConfig.gridSize)
       val (newOpponent, touched, shipSunk): (Player, Boolean, Option[Ship]) = opponent.receiveShoot(target)
-      if(isCurrentPlayerHuman) {
-        if(shipSunk.isDefined) PlayerDisplay.sunk(shipSunk.get.name) else if(touched) PlayerDisplay.touched() else PlayerDisplay.notTouched()
+      if (isCurrentPlayerHuman) {
+        if (shipSunk.isDefined) PlayerDisplay.sunk(shipSunk.get.name) else if (touched) PlayerDisplay.touched() else PlayerDisplay.notTouched()
         GameDisplay.endOfTurn()
         PlayerInputs.pressAKey()
       }
@@ -114,14 +114,14 @@ object Main extends App {
     } else {
 
       val addedVictoryWinner = winner.get.addVictory()
-      val continue: Boolean = if(currentPlayer.isInstanceOf[HumanPlayer] || opponent.isInstanceOf[HumanPlayer]){
+      val continue: Boolean = if (currentPlayer.isInstanceOf[HumanPlayer] || opponent.isInstanceOf[HumanPlayer]) {
         GameDisplay.winner(addedVictoryWinner.name)
         GameDisplay.continue()
         PlayerInputs.continue() != "q"
       } else {
         gameState.gameCount < gameState.numberOfGames
       }
-      if(continue) {
+      if (continue) {
         GameDisplay.clear()
         GameDisplay.gameNumber(gameState.gameCount + 1, gameState.numberOfGames)
         mainLoop(GameState(currentPlayer.reset(gameConfig.shipsConfig, gameConfig.gridSize), addedVictoryWinner.reset(gameConfig.shipsConfig, gameConfig.gridSize), gameState.numberOfGames, gameState.gameCount + 1), gameConfig)
@@ -131,6 +131,7 @@ object Main extends App {
 
     }
   }
+
   val gameStates = initGameStates(gameType, 100, randoms, gameConfig)
   val results = gameStates.map(gameState => {
     GameDisplay.gameNumber(gameState.gameCount, gameState.numberOfGames)
@@ -138,7 +139,7 @@ object Main extends App {
   })
   GameDisplay.end(results)
   val outputFile = new BufferedWriter(new FileWriter("results.csv"))
-  val csvFields = "Player 1, Result player 1, Result player 2, Player 2\n" + results.map( result =>  s"${result._1.name}, ${result._1.numberOfWins.toString}, ${result._2.numberOfWins.toString}, ${result._2.name}\n").mkString
+  val csvFields = "Player 1, Result player 1, Result player 2, Player 2\n" + results.map(result => s"${result._1.name}, ${result._1.numberOfWins.toString}, ${result._2.numberOfWins.toString}, ${result._2.name}\n").mkString
   outputFile.write(csvFields)
   outputFile.close()
 }

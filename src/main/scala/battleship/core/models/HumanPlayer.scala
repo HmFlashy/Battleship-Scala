@@ -1,30 +1,36 @@
 package battleship.core.models
 
-import battleship.core.GameConfig
+import battleship.utils.io.PlayerInputs
+import battleship.utils.ships.Generator
 
 import scala.collection.immutable.Seq
-import battleship.utils.io.{PlayerDisplay, PlayerInputs}
-import battleship.utils.ships.{Generator, Validator}
-
 import scala.util.Random
 
-case class HumanPlayer(ships: Seq[Ship], name: String, shots: Map[(Int, Int),Boolean], receivedShots: Seq[(Int, Int)], numberOfWins: Int, random: Random) extends Player {
+case class HumanPlayer(ships: Seq[Ship], name: String, shots: Map[(Int, Int), Boolean], receivedShots: Seq[(Int, Int)], numberOfWins: Int, random: Random) extends Player {
 
   /**
-    * Get the target
-    * @return (Int, Int) A tuple that indicates where the human player is shooting
+    * Get the coordinates of the target
+    *
+    * @param gridSize Size of the grid to shoot
+    * @return (Int, Int) A tuple that indicates where the player is shooting
     */
   override def shoot(gridSize: Int): (Int, Int) = {
     PlayerInputs.getPoint(gridSize)
   }
 
+  /**
+    * Hook t
+    *
+    * @param shot
+    * @return
+    */
   override def receiveShoot(shot: (Int, Int)): (HumanPlayer, Boolean, Option[Ship]) = {
     val shipShot: Option[Ship] = ships.find(ship => ship.squares.contains(shot))
     shipShot match {
       case Some(ship) => {
         val newShip: Ship = ship.hit(shot)
         val sunk: Boolean = newShip.isSunk()
-        (HumanPlayer(ships.map { case oldShip if oldShip == ship => newShip; case x => x }, name, shots, receivedShots :+ shot, numberOfWins, random), true, if(sunk) Some(newShip) else None)
+        (HumanPlayer(ships.map { case oldShip if oldShip == ship => newShip; case x => x }, name, shots, receivedShots :+ shot, numberOfWins, random), true, if (sunk) Some(newShip) else None)
       }
       case None => (HumanPlayer(ships, name, shots, receivedShots :+ shot, numberOfWins, random), false, None)
     }

@@ -1,9 +1,7 @@
 package battleship.utils.io
 
-import java.lang.Exception
-
-import battleship.core.GameConfig
 import battleship.core.models.{Ship, ShipInformation}
+
 import scala.annotation.tailrec
 import scala.io.StdIn
 
@@ -59,11 +57,11 @@ object PlayerInputs {
   @tailrec
   def getPoint(gridSize: Int): (Int, Int) = {
     val coordinates: String = StdIn.readLine()
-    val Pattern = ("(^[a-zA-Z][0-"+(gridSize-1)+"]$)").r
+    val Pattern = ("(^[a-zA-Z][0-" + (gridSize - 1) + "]$)").r
     coordinates match {
       case Pattern(p) => {
         val line = p(0).toUpper.toInt - 'A'
-        if(line - gridSize < 0)
+        if (line - gridSize < 0)
           (line, p(1) - '0'.toInt)
         else
           getPoint(gridSize)

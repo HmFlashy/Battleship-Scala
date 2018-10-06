@@ -1,6 +1,5 @@
 package battleship.utils.ships
 
-import battleship.core.{GameConfig, models}
 import battleship.core.models.{Ship, ShipInformation}
 import battleship.utils.io.{GameDisplay, GridDisplay, PlayerDisplay, PlayerInputs}
 

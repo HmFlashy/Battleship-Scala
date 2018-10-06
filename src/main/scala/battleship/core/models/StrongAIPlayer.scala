@@ -4,14 +4,14 @@ import battleship.utils.ships.Generator
 
 import scala.annotation.tailrec
 import scala.collection.immutable.Seq
-import scala.io.StdIn
 import scala.util.Random
 
-case class StrongAIPlayer(ships: Seq[Ship], name: String, shots: Map[(Int, Int),Boolean], receivedShots: Seq[(Int, Int)], numberOfWins: Int, random: Random) extends Player {
+case class StrongAIPlayer(ships: Seq[Ship], name: String, shots: Map[(Int, Int), Boolean], receivedShots: Seq[(Int, Int)], numberOfWins: Int, random: Random) extends Player {
 
   /**
     *
-    * @return
+    * @param gridSize
+    * @return (Int, Int) The coordinates where the AI will shot
     */
   override def shoot(gridSize: Int): (Int, Int) = {
     val hits = shots.filter(shot => shot._2).keys.toSet
@@ -51,7 +51,7 @@ case class StrongAIPlayer(ships: Seq[Ship], name: String, shots: Map[(Int, Int),
       case Some(ship) => {
         val newShip: Ship = ship.hit(shot)
         val sunk: Boolean = newShip.isSunk()
-        (this.copy( ships = ships.map { case oldShip if oldShip == ship => newShip; case x => x }, receivedShots = receivedShots :+ shot), true, if(sunk) Some(newShip) else None)
+        (this.copy(ships = ships.map { case oldShip if oldShip == ship => newShip; case x => x }, receivedShots = receivedShots :+ shot), true, if (sunk) Some(newShip) else None)
       }
       case None => (this.copy(receivedShots = receivedShots :+ shot), false, None)
     }
@@ -82,6 +82,6 @@ case class StrongAIPlayer(ships: Seq[Ship], name: String, shots: Map[(Int, Int),
 object StrongAIPlayer {
   def generateIA(index: Int, random: Random, shipsConfig: Map[String, Int], gridSize: Int): StrongAIPlayer = {
     val ships: Seq[Ship] = Generator.randomShips(shipsConfig, Seq[Ship](), random, gridSize)
-    StrongAIPlayer(ships, "Strong IA "+index, Map[(Int, Int), Boolean](), Seq[(Int, Int)](), 0, random)
+    StrongAIPlayer(ships, "Strong IA " + index, Map[(Int, Int), Boolean](), Seq[(Int, Int)](), 0, random)
   }
 }

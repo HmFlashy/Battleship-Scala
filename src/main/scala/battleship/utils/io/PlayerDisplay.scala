@@ -35,9 +35,9 @@ object PlayerDisplay {
   }
 
 
-  def setNewShip(nameShip: String, sizeShip: Int): Unit  = {
+  def setNewShip(nameShip: String, sizeShip: Int): Unit = {
     println("You have to place the " + nameShip + " -> which is composed of " + sizeShip + " units:\n" +
-      "Will it be horizontal ("+ Ship.HORIZONTAL + ") or vertical ("+Ship.VERTICAL +") ?")
+      "Will it be horizontal (" + Ship.HORIZONTAL + ") or vertical (" + Ship.VERTICAL + ") ?")
   }
 
 

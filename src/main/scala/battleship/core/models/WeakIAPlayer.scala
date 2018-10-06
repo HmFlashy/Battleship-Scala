@@ -26,7 +26,7 @@ case class WeakIAPlayer(ships: Seq[Ship], name: String, shots: Map[(Int, Int), B
       case Some(ship) => {
         val newShip: Ship = ship.hit(shot)
         val sunk: Boolean = newShip.isSunk()
-        (WeakIAPlayer(ships.map { case oldShip if oldShip == ship => newShip; case x => x }, name, shots, receivedShots :+ shot, random, numberOfWins), true, if(sunk) Some(newShip) else None)
+        (WeakIAPlayer(ships.map { case oldShip if oldShip == ship => newShip; case x => x }, name, shots, receivedShots :+ shot, random, numberOfWins), true, if (sunk) Some(newShip) else None)
       }
       case None => (WeakIAPlayer(ships, name, shots, receivedShots :+ shot, random, numberOfWins), false, None)
     }
@@ -55,6 +55,6 @@ case class WeakIAPlayer(ships: Seq[Ship], name: String, shots: Map[(Int, Int), B
 object WeakIAPlayer {
   def generateIA(index: Int, random: Random, shipsConfig: Map[String, Int], gridSize: Int): WeakIAPlayer = {
     val ships: Seq[Ship] = Generator.randomShips(shipsConfig, Seq[Ship](), random, gridSize)
-    WeakIAPlayer(ships, "Weak IA "+index, Map[(Int, Int), Boolean](), Seq[(Int, Int)](), random, 0)
+    WeakIAPlayer(ships, "Weak IA " + index, Map[(Int, Int), Boolean](), Seq[(Int, Int)](), random, 0)
   }
 }

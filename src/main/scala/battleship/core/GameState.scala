@@ -2,12 +2,12 @@ package battleship.core
 
 import battleship.core.models.Player
 
-case class GameState(currentPlayer: Player, opponent: Player, numberOfGames:Int, gameCount: Int) {
+case class GameState(currentPlayer: Player, opponent: Player, numberOfGames: Int, gameCount: Int) {
 
   def isThereAWinner(): Option[Player] = {
-    if(currentPlayer.numberOfShipsLeft() == 0){
+    if (currentPlayer.numberOfShipsLeft() == 0) {
       return Option[Player](opponent)
-    } else if(opponent.numberOfShipsLeft() == 0){
+    } else if (opponent.numberOfShipsLeft() == 0) {
       return Option[Player](currentPlayer)
     } else {
       return None

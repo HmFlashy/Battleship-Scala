@@ -15,6 +15,7 @@ trait Player {
 
   /**
     *
+    * @param gridSize
     * @return
     */
   def shoot(gridSize: Int): (Int, Int)
@@ -37,9 +38,10 @@ trait Player {
       val currentShip = ships.headOption
       currentShip match {
         case None => number
-        case Some(ship) => if(ship.isSunk()) numberOfShipsLeftTR(ships.tail, number) else numberOfShipsLeftTR(ships.tail, number + 1)
+        case Some(ship) => if (ship.isSunk()) numberOfShipsLeftTR(ships.tail, number) else numberOfShipsLeftTR(ships.tail, number + 1)
       }
     }
+
     numberOfShipsLeftTR(ships, 0)
   }
 
@@ -51,8 +53,19 @@ trait Player {
     */
   def didShoot(target: (Int, Int), didTouch: Boolean): Player
 
+  /**
+    *
+    * @return
+    */
   def addVictory(): Player
 
+  /**
+    * Lolllosd
+    *
+    * @param shipsConfig
+    * @param gridSize
+    * @return
+    */
   def reset(shipsConfig: Map[String, Int], gridSize: Int): Player
 
 }
@@ -102,15 +115,15 @@ object Player {
 
   @tailrec
   def findClosestFreeSlot(origin: (Int, Int), shots: Map[(Int, Int), Boolean], rayon: Int, slot: (Int, Int), direction: Int, gridSize: Int): (Int, Int) = {
-    if(
+    if (
       slot._1 >= gridSize ||
-      slot._1 < 0 ||
-      slot._2 >= gridSize ||
-      slot._2 < 0 ||
-      shots.contains(slot)
-    ){
+        slot._1 < 0 ||
+        slot._2 >= gridSize ||
+        slot._2 < 0 ||
+        shots.contains(slot)
+    ) {
       val newSlotAndDirection = nextSlot(origin, slot, rayon, direction)
-      findClosestFreeSlot(origin, shots, if(newSlotAndDirection._3) rayon + 1 else rayon, newSlotAndDirection._1, newSlotAndDirection._2, gridSize)
+      findClosestFreeSlot(origin, shots, if (newSlotAndDirection._3) rayon + 1 else rayon, newSlotAndDirection._1, newSlotAndDirection._2, gridSize)
     } else {
       slot
     }

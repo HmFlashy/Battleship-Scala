@@ -12,7 +12,7 @@ case class GameConfig() {
     CRUISER -> 3,
     SUBMARINE -> 3,
     DESTROYER -> 2
-  ).toSeq.sortBy(- _._2):_*)
+  ).toSeq.sortBy(-_._2): _*)
 
   val gridSize: Int = 10
 }
