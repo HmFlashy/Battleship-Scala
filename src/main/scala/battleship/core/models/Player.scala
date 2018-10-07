@@ -138,7 +138,7 @@ object Player {
     * @param slot The current slot that is processed
     * @param direction The current direction of the algorithm
     * @param gridSize The size of the grid
-    * @return
+    * @return The closest slot not shot
     */
   @tailrec
   def findClosestFreeSlot(origin: (Int, Int), shots: Map[(Int, Int), Boolean], radius: Int, slot: (Int, Int), direction: Int, gridSize: Int): (Int, Int) = {

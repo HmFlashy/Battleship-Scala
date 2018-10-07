@@ -22,10 +22,10 @@ case class StrongAIPlayer(ships: Seq[Ship], name: String, shots: Map[(Int, Int),
       hitOption match {
         case Some(hit) => {
           hit match {
-            case up if hit._2 > 0 && shots.get(hit._1, hit._2 - 1).isEmpty => Some(up._1, up._2 - 1)
-            case right if hit._1 < gridSize && shots.get((hit._1 + 1, hit._2)).isEmpty => Some(right._1 + 1, right._2)
-            case down if hit._2 < gridSize && shots.get((hit._1, hit._2 + 1)).isEmpty => Some(down._1, down._2 + 1)
-            case left if hit._1 > 0 && shots.get((hit._1 - 1, hit._2)).isEmpty => Some(left._1 - 1, left._2)
+            case up if hit._2 - 1 >= 0 && shots.get(hit._1, hit._2 - 1).isEmpty => Some(up._1, up._2 - 1)
+            case right if hit._1 + 1 < gridSize && shots.get((hit._1 + 1, hit._2)).isEmpty => Some(right._1 + 1, right._2)
+            case down if hit._2 + 1 < gridSize && shots.get((hit._1, hit._2 + 1)).isEmpty => Some(down._1, down._2 + 1)
+            case left if hit._1 - 1 >= 0 && shots.get((hit._1 - 1, hit._2)).isEmpty => Some(left._1 - 1, left._2)
             case _ => hitHasNotShotNeighbours(hits.tail)
           }
         }
