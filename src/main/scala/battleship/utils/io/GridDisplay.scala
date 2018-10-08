@@ -51,7 +51,6 @@ object GridDisplay {
 
   def showPlayerGrid(ships: Seq[Ship], shots: Seq[(Int, Int)], gridSize: Int): Unit = {
     println(s"Here are your ships ->")
-
     var grid = List.fill[List[String]](gridSize)(List.fill(gridSize)(WATER + BLOCK))
     shots.foreach((shot) => {
       grid = grid.updated(shot._1, grid(shot._1).updated(shot._2, MISSED + BLOCK))

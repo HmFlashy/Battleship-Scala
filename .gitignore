@@ -1,8 +1,5 @@
 *.class
 *.log
-# Simple Build Tool
-# http://www.scala-sbt.org/release/docs/Getting-Started/Directories.html#configuring-version-control
-
 dist/*
 target/
 lib_managed/
@@ -14,3 +11,4 @@ project/plugins/project/
 .lib/
 .idea
 results.csv
+Report.odt
