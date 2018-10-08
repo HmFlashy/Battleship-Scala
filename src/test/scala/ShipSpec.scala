@@ -26,9 +26,15 @@ class ShipSpec extends FlatSpec with Matchers {
     hitShip.squares.count(square => square._2) == 1
   }
 
-  "A new ship that has been sunk" should "have all his slot hit" in {
+  "A new ship that has been sunk" should "have all his slots hit" in {
     val newShip: Ship = Ship.convertInputsToShip(Ship.DESTROYER, Ship.HORIZONTAL, (0, 0), gameConfig.shipsConfig)
     val hitShip = newShip.hit((0, 0)).hit((1, 0))
     hitShip.squares.count(square => square._2) == gameConfig.shipsConfig(Ship.DESTROYER)
+  }
+
+  "A ship that is receiving wrong coordinates" should "not be changed" in {
+    val newShip: Ship = Ship.convertInputsToShip(Ship.DESTROYER, Ship.HORIZONTAL, (0, 0), gameConfig.shipsConfig)
+    val hitShip = newShip.hit((1, 0))
+    hitShip.squares.count(square => square._2) == 0
   }
 }
