@@ -1,9 +1,7 @@
 package battleship.core
 
-import java.io.{BufferedWriter, FileWriter}
-
 import battleship.core.models._
-import battleship.utils.io.{GameDisplay, GridDisplay, PlayerDisplay, PlayerInputs}
+import battleship.utils.io._
 
 import scala.annotation.tailrec
 import scala.util.Random
@@ -138,9 +136,10 @@ object Main extends App {
     GameDisplay.gameNumber(gameState.gameCount, gameState.numberOfGames)
     mainLoop(gameState, gameConfig)
   })
+
+  /**
+    * Write the results on the filesystem. In a file called results.csv.
+    */
   GameDisplay.end(results)
-  val outputFile = new BufferedWriter(new FileWriter("results.csv"))
-  val csvFields = "Player 1, Result player 1, Result player 2, Player 2\n" + results.map(result => s"${result._1.name}, ${result._1.numberOfWins.toString}, ${result._2.numberOfWins.toString}, ${result._2.name}\n").mkString
-  outputFile.write(csvFields)
-  outputFile.close()
+  GameOutput.writeResults(results)
 }

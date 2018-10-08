@@ -12,7 +12,7 @@ class PlayerSpec extends  FlatSpec with Matchers {
   var newPlayer: Player = WeakIAPlayer.generateIA(1, new Random(), gameConfig.shipsConfig, gameConfig.gridSize)
   var opponent: Player = WeakIAPlayer.generateIA(2, new Random(), gameConfig.shipsConfig, gameConfig.gridSize)
 
-  "Depending of this game configuration, a new player" should s"have ${gameConfig.shipsConfig.size} all his ships not sunk or touched" in {
+  "Depending of this game configuration, a new player" should s"have all his ships not sunk or touched" in {
     newPlayer.numberOfShipsLeft() should equal(gameConfig.shipsConfig.size)
     newPlayer.ships.flatMap(ship => ship.squares).filter(square => square._2) should have size 0
   }
